@@ -1,0 +1,143 @@
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
+
+num_only = RegexValidator(r'^[0-9]*$','only numbers are allowed')
+role_choices = [
+    ('Citoyen','Citoyen'),
+    ('Admin','Admin'),
+    ('Agent','Agent')
+]
+topic_choices = [
+    ('Sportif','Sportif'),
+    ('Politique','Politique'),
+    ('Social','Social'),
+    ('Patronat local','Patronat local'),
+    ('Culturel','Culturel'),
+    ('Audiance','Audiance'),
+]
+activity_choices = [
+    ('Politique','Politique'),
+    ('Economique','Economique'),
+]
+accomagnement_choises = [
+    ('Economique','Economique'),
+
+]
+state_choices = [
+    ('en traitement','en traitement'),
+    ('validé','validé'),
+    ('refusé','refusé'),
+]
+ecological_info_choices = [
+    ('sensibilisation','sensibilisation'),
+    ('valorisation','valorisation'),
+]
+product_action_choices = [
+    ('Vente','Vente'),
+    ('Echange','Echange'),
+    ('Allocation','Allocation')
+]
+
+class Wilaya(models.Model):
+    name = models.CharField(max_length=20, null=False)
+
+    def __str__(self) -> str:
+        return self.name
+
+class Commune(models.Model):
+    name = models.CharField(max_length=20, null=False)
+    wilaya = models.ForeignKey(Wilaya,related_name='communes',on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.name+'_'+self.wilaya.name
+
+
+class User(AbstractUser):
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='auth_user_set',
+        related_query_name='user'
+    )
+
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='auth_user_set',
+        related_query_name='user'
+    )
+    social_number = models.CharField(max_length=20,validators=[num_only])
+    phone = models.CharField(max_length=10 , validators=[num_only],blank=True)
+    image = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
+    role =  models.CharField(max_length=10 , choices=role_choices , default='Citoyen')
+    otp = models.CharField(max_length=6, null=True, blank=True)
+    wilaya = models.ForeignKey(Wilaya, related_name='users', on_delete=models.CASCADE)
+    commune = models.ForeignKey(Commune,related_name='users',on_delete=models.CASCADE)
+    birth_date = models.DateField(null=True)
+    social_approved = models.BooleanField(default=False)
+    
+    def __str__(self) -> str:
+        return self.first_name+' '+self.last_name
+
+class BaseModel(models.Model):
+    title = models.CharField(max_length=50)
+    description = models.TextField(max_length=500, null=False, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    class Meta:
+        abstract = True
+
+class Formation(BaseModel): 
+    owner = models.ForeignKey(User, related_name='formations', on_delete=models.CASCADE, null=False)  
+    date = models.DateTimeField()
+    localisation = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+
+class Accompagnement(BaseModel):
+    owner = models.ForeignKey(User, related_name='accompagnements', on_delete=models.CASCADE, null=False)
+    image = models.ImageField(null=True, blank=True, upload_to='accompagnements_images')
+    type = models.CharField(max_length=15, choices=accomagnement_choises,null=True, blank=True) #non null
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+
+class Topic(BaseModel):
+    owner = models.ForeignKey(User, related_name='topics', on_delete=models.CASCADE, null=False)
+    image = models.ImageField(null=True, blank=True, upload_to='topics_images')
+    type = models.CharField(max_length=15,choices=topic_choices, null=True, blank=True) #non null
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+        
+
+class Comment(models.Model):
+    owner = models.OneToOneField(User, related_name='user',on_delete=models.CASCADE)
+    content = models.TextField(max_length=300, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    topic = models.ForeignKey(Topic, related_name='comments', on_delete=models.CASCADE, null=False)
+    def __str__(self) -> str:
+        return f'{self.owner} {self.topic}'
+
+class Activity(BaseModel):
+    owner = models.ForeignKey(User, related_name='activities', on_delete=models.CASCADE, null=False)
+    directed_by = models.CharField(max_length=50)
+    date = models.DateTimeField()
+    
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+
+class EcologicalInformation(BaseModel):
+    owner = models.ForeignKey(User, related_name='ecological_informations', on_delete=models.CASCADE)
+    image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
+    type = models.CharField(max_length=15, choices=ecological_info_choices)
+
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+
+class Product(models.Model):
+    owner = models.ForeignKey(User, related_name='products',on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=500, null=False, blank=True)
+    price = models.IntegerField()
+    image = models.ImageField(null=True, blank=True, upload_to='products_images')
+    action_type = models.CharField(max_length=15,choices=product_action_choices)
+    created_at = models.DateTimeField(auto_now_add=True)
+
