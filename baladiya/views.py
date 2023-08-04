@@ -114,10 +114,10 @@ class ManageUsersView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     # permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ['first_name','last_name','email','wilaya','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
-    filterset_fields = ['first_name','last_name','email','wilaya','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
-    search_fields = ['first_name','last_name','email','wilaya__id','commune__id','phone','role','is_superuser', 'is_active','social_number','social_approved']
-    ordering_fields = ['first_name','last_name','email','wilaya','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
+    filter_fields = ['first_name','last_name','email','document','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
+    filterset_fields = ['first_name','last_name','email','document','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
+    search_fields = ['first_name','last_name','email','document','commune__id','phone','role','is_superuser', 'is_active','social_number','social_approved']
+    ordering_fields = ['first_name','last_name','email','document','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
 
 class FormationView(viewsets.ModelViewSet):
     serializer_class = FormationSerializer
@@ -177,10 +177,10 @@ class ActivityView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ['owner','directed_by','state']
-    filterset_fields = ['owner','directed_by','state']
-    search_fields = ['owner__id','title','description','directed_by','date','created_at','state']
-    ordering_fields = ['created_at','date','state']
+    filter_fields = ['owner','directed_by','state','type']
+    filterset_fields = ['owner','directed_by','state','type']
+    search_fields = ['owner__id','title','description','directed_by','date','created_at','state','type']
+    ordering_fields = ['created_at','date','state','type']
     
     def get_queryset(self):
 
@@ -216,3 +216,18 @@ class ProductView(viewsets.ModelViewSet):
 
         commune= self.request.user.commune
         return Product.objects.filter(owner__commune = commune)
+
+class ProductView(viewsets.ModelViewSet):
+    serializer_class = AudianceDemandSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_fields = ['owner','state']
+    filterset_fields = ['owner','state']
+    search_fields = ['owner__id','title','description','created_at','state','date']
+    ordering_fields = ['created_at','date']
+    
+    def get_queryset(self):
+
+        commune= self.request.user.commune
+        return AudianceDemand.objects.filter(owner__commune = commune)

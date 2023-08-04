@@ -19,7 +19,7 @@ class CustomRegisterSerializer(RegisterSerializer):
     last_name = serializers.CharField(required=True, write_only=True)
     email = serializers.EmailField(required=True)
     social_number = serializers.CharField(max_length=20, validators=[num_only])
-    wilaya = serializers.PrimaryKeyRelatedField(queryset=Wilaya.objects.all())
+    document = serializers.ImageField(max_length=None, use_url=True)
     commune = serializers.PrimaryKeyRelatedField(queryset=Commune.objects.all())
     phone = serializers.CharField(max_length=10, validators=[num_only], required=True)
     birth_date = serializers.DateField(required=False)
@@ -34,7 +34,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         data_dict['first_name'] = self.validated_data.get('first_name', '')
         data_dict['last_name'] = self.validated_data.get('last_name', '')
         data_dict['social_number'] = self.validated_data.get('social_number', '')
-        data_dict['wilaya'] = self.validated_data.get('wilaya', '')
+        data_dict['document'] = self.validated_data.get('document', '')
         data_dict['commune'] = self.validated_data.get('commune', '')
         data_dict['phone'] = self.validated_data.get('phone', '')
         data_dict['birth_date'] = self.validated_data.get('birth_date', '')
@@ -61,7 +61,7 @@ class PasswordResetConfirmSerializer(serializers.ModelSerializer):
 class CustomUserDetailSerializer(UserDetailsSerializer):
     class Meta:
         model = User
-        fields = ['id','first_name', 'last_name', 'email', 'wilaya', 'commune', 'role', 'birth_date', 'social_number', 'social_approved', 'is_active','phone', 'image']
+        fields = ['id','first_name', 'last_name', 'email', 'document', 'commune', 'role', 'birth_date', 'social_number', 'social_approved', 'is_active','phone', 'image']
 
 class ManagerUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -110,4 +110,9 @@ class EcologicalInformationSerializer(BaseSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
+        fields = '__all__'
+
+class AudianceDemandSerializer(BaseSerializer):
+    class Meta:
+        model = AudianceDemand
         fields = '__all__'

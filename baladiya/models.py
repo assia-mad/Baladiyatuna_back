@@ -6,7 +6,9 @@ num_only = RegexValidator(r'^[0-9]*$','only numbers are allowed')
 role_choices = [
     ('Citoyen','Citoyen'),
     ('Admin','Admin'),
-    ('Agent','Agent')
+    ('Agent','Agent'),
+    ('Association','Association'),
+    ('Entrepreneur','Entreprneur'),
 ]
 topic_choices = [
     ('Sportif','Sportif'),
@@ -15,6 +17,7 @@ topic_choices = [
     ('Patronat local','Patronat local'),
     ('Culturel','Culturel'),
     ('Audiance','Audiance'),
+    ('Economique','Economique'),
 ]
 activity_choices = [
     ('Politique','Politique'),
@@ -68,12 +71,12 @@ class User(AbstractUser):
     social_number = models.CharField(max_length=20,validators=[num_only])
     phone = models.CharField(max_length=10 , validators=[num_only],blank=True)
     image = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
-    role =  models.CharField(max_length=10 , choices=role_choices , default='Citoyen')
+    role =  models.CharField(max_length=15 , choices=role_choices , default='Citoyen')
     otp = models.CharField(max_length=6, null=True, blank=True)
-    wilaya = models.ForeignKey(Wilaya, related_name='users', on_delete=models.CASCADE)
     commune = models.ForeignKey(Commune,related_name='users',on_delete=models.CASCADE)
     birth_date = models.DateField(null=True)
     social_approved = models.BooleanField(default=False)
+    document = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
     
     def __str__(self) -> str:
         return self.first_name+' '+self.last_name
@@ -120,6 +123,7 @@ class Activity(BaseModel):
     owner = models.ForeignKey(User, related_name='activities', on_delete=models.CASCADE, null=False)
     directed_by = models.CharField(max_length=50)
     date = models.DateTimeField()
+    type = models.CharField(max_length=15,choices=activity_choices,null=True,blank=True)
     
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
@@ -141,3 +145,6 @@ class Product(models.Model):
     action_type = models.CharField(max_length=15,choices=product_action_choices)
     created_at = models.DateTimeField(auto_now_add=True)
 
+class AudianceDemand(BaseModel):
+    owner = models.ForeignKey(User, related_name='audiance_demands',on_delete=models.CASCADE)
+    date = models.DateField()
