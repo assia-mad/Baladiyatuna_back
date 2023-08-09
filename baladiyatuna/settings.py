@@ -43,6 +43,7 @@ CORS_ORIGIN_WHITELIST = (
 INSTALLED_APPS = [
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
