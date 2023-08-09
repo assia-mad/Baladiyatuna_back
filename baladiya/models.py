@@ -72,7 +72,7 @@ class User(AbstractUser):
     image = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
     role =  models.CharField(max_length=15 , choices=role_choices , default='Citoyen')
     otp = models.CharField(max_length=6, null=True, blank=True)
-    commune = models.ForeignKey(Commune,related_name='users',on_delete=models.CASCADE)
+    commune = models.PositiveIntegerField(null=True, blank=True)
     birth_date = models.DateField(null=True,blank=True)
     social_approved = models.BooleanField(default=False)
     document = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
