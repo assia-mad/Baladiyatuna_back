@@ -9,7 +9,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         user = super().save_user(request, user, form, commit)
         data = form.cleaned_data
         user.social_number = data.get('social_number')
-        user.wilaya = data.get('wilaya')
+        user.document = data.get('document')
         user.commune = data.get('commune')
         user.phone= data.get('phone')
         user.birth_date = data.get('birth_date')
