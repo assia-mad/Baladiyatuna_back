@@ -153,7 +153,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'baladiya',
         'USER': 'postgres',
-        'PASSWORD': 'assiamdn2001',
+        'PASSWORD': '1605',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
