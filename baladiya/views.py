@@ -114,10 +114,10 @@ class ManageUsersView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     # permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ['first_name','last_name','email','document','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
-    filterset_fields = ['first_name','last_name','email','document','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
-    search_fields = ['first_name','last_name','email','document','commune__id','phone','role','is_superuser', 'is_active','social_number','social_approved']
-    ordering_fields = ['first_name','last_name','email','document','commune','phone','role','is_superuser', 'is_active','social_number','social_approved']
+    filter_fields = ['first_name','last_name','email','commune','phone','role','is_superuser', 'is_active','social_approved']
+    filterset_fields = ['first_name','last_name','email','commune','phone','role','is_superuser', 'is_active','social_approved']
+    search_fields = ['first_name','last_name','email','commune__id','phone','role','is_superuser', 'is_active','social_approved']
+    ordering_fields = ['first_name','last_name','email','commune','phone','role','is_superuser', 'is_active','social_approved']
 
 class FormationView(viewsets.ModelViewSet):
     serializer_class = FormationSerializer

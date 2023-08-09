@@ -68,13 +68,12 @@ class User(AbstractUser):
         related_name='auth_user_set',
         related_query_name='user'
     )
-    social_number = models.CharField(max_length=20,validators=[num_only])
-    phone = models.CharField(max_length=10 , validators=[num_only],blank=True)
+    phone = models.CharField(max_length=10 , validators=[num_only],blank=True,null=True)
     image = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
     role =  models.CharField(max_length=15 , choices=role_choices , default='Citoyen')
     otp = models.CharField(max_length=6, null=True, blank=True)
     commune = models.ForeignKey(Commune,related_name='users',on_delete=models.CASCADE)
-    birth_date = models.DateField(null=True)
+    birth_date = models.DateField(null=True,blank=True)
     social_approved = models.BooleanField(default=False)
     document = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
     
