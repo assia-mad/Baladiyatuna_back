@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import *
 from .serializers import *
 from dj_rest_auth.registration.views import RegisterView
-from dj_rest_auth.views import LoginView, UserDetailsView
+from dj_rest_auth.views import LoginView, UserDetailsView, PasswordChangeView
 from rest_framework import generics
 import random
 from django.core.mail import send_mail
@@ -12,8 +12,6 @@ from rest_framework.response import Response
 from .pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter , OrderingFilter
-
-
 
 
 class CustomRegisterView(RegisterView):
@@ -84,7 +82,6 @@ class ResetPasswordView(generics.UpdateAPIView):
         new_password = data['new_password'] 
         new_password2 = data['new_password2'] 
         if user.is_active:
-            # Check if otp is valid
             if data['otp'] == user.otp:
                 if len(new_password) > 7:
                     if new_password == new_password2 :
@@ -231,3 +228,6 @@ class ProductView(viewsets.ModelViewSet):
 
         commune= self.request.user.commune
         return AudianceDemand.objects.filter(owner__commune = commune)
+
+
+    
