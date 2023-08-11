@@ -48,7 +48,7 @@ urlpatterns = [
    path('account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
    re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$',VerifyEmailView.as_view(), name='account_confirm_email'),
    path('password-reset/', ResetRequestView.as_view()),
-   path('password-change/',PasswordChangeView.as_view()),
+   path('password-change/', PasswordChangeView.as_view(), name='password_change'),
    path('user/', CustomUserDetailsView.as_view()),
    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

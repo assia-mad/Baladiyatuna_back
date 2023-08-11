@@ -105,7 +105,6 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
-OLD_PASSWORD_FIELD_ENABLED = True,
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
@@ -119,7 +118,10 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'baladiya.serializers.CustomLoginSerializer',
-    'USER_DETAILS_SERIALIZER':'neraApp.serializers.CustomUserDetailSerializer',
+    'USER_DETAILS_SERIALIZER':'baladiya.serializers.CustomUserDetailSerializer',
+}
+REST_AUTH = {
+    'OLD_PASSWORD_FIELD_ENABLED': True,
 }
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [

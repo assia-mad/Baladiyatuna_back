@@ -1,6 +1,8 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
-from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
+from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer, PasswordChangeSerializer
 from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.hashers import check_password
 from .models import *
 
 class WilayaSerializer(serializers.ModelSerializer):
