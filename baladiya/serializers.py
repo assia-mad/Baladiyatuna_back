@@ -20,7 +20,7 @@ class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=True, write_only=True)
     email = serializers.EmailField(required=True)
-    document = serializers.ImageField(max_length=None, use_url=True)
+    document = serializers.ImageField(max_length=None, use_url=True, required=False)
     commune = serializers.IntegerField(min_value=0)
     phone = serializers.CharField(max_length=10, validators=[num_only], required=False)
     birth_date = serializers.DateField(required=False)

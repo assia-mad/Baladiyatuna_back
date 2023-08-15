@@ -58,17 +58,6 @@ class Commune(models.Model):
 
 
 class User(AbstractUser):
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='auth_user_set',
-        related_query_name='user'
-    )
-
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='auth_user_set',
-        related_query_name='user'
-    )
     phone = models.CharField(max_length=10 , validators=[num_only],blank=True,null=True)
     image = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
     role =  models.CharField(max_length=15 , choices=role_choices , default='Citoyen')
