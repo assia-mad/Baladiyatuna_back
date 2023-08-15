@@ -33,6 +33,7 @@ router.register('activities', ActivityView, basename='activity')
 router.register('comments', CommentView, basename='comment')
 router.register('ecological_infos', EcologicalInformationView, basename='ecological_info')
 router.register('products', ProductView, basename='product')
+router.register('audiance_demands', AudianceDemandView, basename='audiance_demand')
 
 
 

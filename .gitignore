@@ -1,3 +1,4 @@
 /baladiya/migrations/*.py
 /baladiya/migrations/*.pyc
 /baladiya/migrations/__pycache__/
+/.vscode/*.json

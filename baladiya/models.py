@@ -25,6 +25,7 @@ activity_choices = [
 ]
 accomagnement_choises = [
     ('Economique','Economique'),
+    ('Politique', 'Politique'),
 
 ]
 state_choices = [
