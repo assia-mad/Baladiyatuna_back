@@ -115,7 +115,7 @@ class Discussion(BaseModel):
         
 
 class Comment(models.Model):
-    owner = models.OneToOneField(User, related_name='user',on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='user',on_delete=models.CASCADE)
     content = models.TextField(max_length=300, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     discussion = models.ForeignKey(Discussion, related_name='comments', on_delete=models.CASCADE, null=True, blank=True)
