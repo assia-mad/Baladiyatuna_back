@@ -12,9 +12,7 @@ role_choices = [
 ]
 topic_choices = [
     ('Sportif','Sportif'),
-    ('Politique','Politique'),
     ('Social','Social'),
-    ('Patronat local','Patronat local'),
     ('Culturel','Culturel'),
     ('Audiance','Audiance'),
     ('Economique','Economique'),
@@ -42,6 +40,10 @@ product_action_choices = [
     ('Echange','Echange'),
     ('Allocation','Allocation')
 ]
+discussion_choices = [
+    ('Politique','Politique'),
+    ('Economique','Economique'),
+]
 
 class Wilaya(models.Model):
     name = models.CharField(max_length=20, null=False)
@@ -58,6 +60,7 @@ class Commune(models.Model):
 
 
 class User(AbstractUser):
+
     phone = models.CharField(max_length=10 , validators=[num_only],blank=True,null=True)
     image = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
     role =  models.CharField(max_length=15 , choices=role_choices , default='Citoyen')
@@ -74,7 +77,6 @@ class BaseModel(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=500, null=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
     class Meta:
         abstract = True
 
@@ -82,6 +84,7 @@ class Formation(BaseModel):
     owner = models.ForeignKey(User, related_name='formations', on_delete=models.CASCADE, null=False)  
     date = models.DateTimeField()
     localisation = models.CharField(max_length=50)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
 
@@ -96,6 +99,16 @@ class Topic(BaseModel):
     owner = models.ForeignKey(User, related_name='topics', on_delete=models.CASCADE, null=False)
     image = models.ImageField(null=True, blank=True, upload_to='topics_images')
     type = models.CharField(max_length=15,choices=topic_choices, null=True, blank=True) #non null
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+
+
+class Discussion(BaseModel):
+    owner = models.ForeignKey(User, related_name='discussions', on_delete=models.CASCADE, null=False)
+    image = models.ImageField(null=True, blank=True, upload_to='discussion_images')
+    type = models.CharField(max_length=15,choices=discussion_choices)
+
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
         
@@ -104,7 +117,7 @@ class Comment(models.Model):
     owner = models.OneToOneField(User, related_name='user',on_delete=models.CASCADE)
     content = models.TextField(max_length=300, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    topic = models.ForeignKey(Topic, related_name='comments', on_delete=models.CASCADE, null=False)
+    discussion = models.ForeignKey(Discussion, related_name='comments', on_delete=models.CASCADE, null=False)
     def __str__(self) -> str:
         return f'{self.owner} {self.topic}'
 
@@ -137,3 +150,13 @@ class Product(models.Model):
 class AudianceDemand(BaseModel):
     owner = models.ForeignKey(User, related_name='audiance_demands',on_delete=models.CASCADE)
     date = models.DateField()
+
+class Agenda(BaseModel):
+    owner = models.ForeignKey(User, related_name='agendas', on_delete=models.CASCADE, null=False)
+    date = models.DateTimeField()
+    localisation = models.CharField(max_length=50)
+    image = models.ImageField(null=True, blank=True, upload_to='agenda_images')
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+
+
