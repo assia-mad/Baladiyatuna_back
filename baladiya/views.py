@@ -188,10 +188,10 @@ class AccompagnementView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner", "type", "state"]
-    filterset_fields = ["owner", "type", "state"]
-    search_fields = ["owner__id", "title", "description", "created_at", "type", "state"]
-    ordering_fields = ["owner", "title", "created_at", "state"]
+    filter_fields = ["owner__role", "type"]
+    filterset_fields = ["owner__role", "type"]
+    search_fields = ["owner__id", "title", "description", "created_at", "type"]
+    ordering_fields = ["owner", "title", "created_at"]
 
     def get_queryset(self):
         commune = self.request.user.commune
@@ -204,9 +204,9 @@ class CommentView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner", "topic__title"]
-    filterset_fields = ["owner", "topic__title"]
-    search_fields = ["owner__id", "content", "created_at", "topic__id"]
+    filter_fields = ["owner", "discussion"]
+    filterset_fields = ["owner", "discussion"]
+    search_fields = ["owner__id", "content", "created_at", "discussion__id"]
     ordering_fields = ["owner", "created_at"]
 
 
@@ -230,8 +230,8 @@ class ActivityView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner", "directed_by", "state", "type"]
-    filterset_fields = ["owner", "directed_by", "state", "type"]
+    filter_fields = ["owner__role", "directed_by", "type"]
+    filterset_fields = ["owner__role", "directed_by", "type"]
     search_fields = [
         "owner__id",
         "title",
@@ -239,10 +239,9 @@ class ActivityView(viewsets.ModelViewSet):
         "directed_by",
         "date",
         "created_at",
-        "state",
         "type",
     ]
-    ordering_fields = ["created_at", "date", "state", "type"]
+    ordering_fields = ["created_at", "date", "type"]
 
     def get_queryset(self):
         commune = self.request.user.commune
@@ -292,3 +291,25 @@ class AudianceDemandView(viewsets.ModelViewSet):
     def get_queryset(self):
         commune = self.request.user.commune
         return AudianceDemand.objects.filter(owner__commune=commune)
+
+class AgendaView(viewsets.ModelViewSet):
+    queryset = Agenda.objects.all()
+    serializer_class = AgendaSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_fields = ["owner", "state","date"]
+    filterset_fields = ["owner", "state","date"]
+    search_fields = ["owner__id", "title", "description", "created_at", "state", "date","localisation"]
+    ordering_fields = ["created_at", "date"]
+
+class DiscussionView(viewsets.ModelViewSet):
+    queryset = Discussion.objects.all()
+    serializer_class = DiscussionSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner", "type", "state"]
+    filter_fields = ["owner", "type"]
+    search_fields = ["owner__id", "title", "description", "created_at", "type", "state"]
+    ordering_fields = ["created_at", "state"]

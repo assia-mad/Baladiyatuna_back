@@ -116,3 +116,13 @@ class AudianceDemandSerializer(BaseSerializer):
     class Meta:
         model = AudianceDemand
         fields = '__all__'
+
+class AgendaSerializer(BaseSerializer):
+    class Meta:
+        model = Agenda
+        fields = '__all__'
+
+class DiscussionSerializer(BaseSerializer):
+    class Meta:
+        model = Discussion
+        fields = '__all__'
