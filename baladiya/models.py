@@ -108,6 +108,7 @@ class Discussion(BaseModel):
     owner = models.ForeignKey(User, related_name='discussions', on_delete=models.CASCADE, null=False)
     image = models.ImageField(null=True, blank=True, upload_to='discussion_images')
     type = models.CharField(max_length=15,choices=discussion_choices)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
@@ -150,6 +151,7 @@ class Product(models.Model):
 class AudianceDemand(BaseModel):
     owner = models.ForeignKey(User, related_name='audiance_demands',on_delete=models.CASCADE)
     date = models.DateField()
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
 class Agenda(BaseModel):
     owner = models.ForeignKey(User, related_name='agendas', on_delete=models.CASCADE, null=False)
