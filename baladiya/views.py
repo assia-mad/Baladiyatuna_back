@@ -253,10 +253,10 @@ class EcologicalInformationView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner", "type", "state"]
-    filterset_fields = ["owner", "type", "state"]
-    search_fields = ["owner__id", "title", "description", "created_at", "type", "state"]
-    ordering_fields = ["created_at", "date", "state"]
+    filter_fields = ["owner", "type"]
+    filterset_fields = ["owner", "type"]
+    search_fields = ["owner__id", "title", "description", "created_at", "type"]
+    ordering_fields = ["created_at", "date"]
 
     def get_queryset(self):
         commune = self.request.user.commune
@@ -298,9 +298,9 @@ class AgendaView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner", "state","date"]
-    filterset_fields = ["owner", "state","date"]
-    search_fields = ["owner__id", "title", "description", "created_at", "state", "date","localisation"]
+    filter_fields = ["owner","date"]
+    filterset_fields = ["owner","date"]
+    search_fields = ["owner__id", "title", "description", "created_at", "date","localisation"]
     ordering_fields = ["created_at", "date"]
 
 class DiscussionView(viewsets.ModelViewSet):
