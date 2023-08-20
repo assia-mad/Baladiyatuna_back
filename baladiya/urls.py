@@ -37,8 +37,7 @@ router.register('audiance_demands', AudianceDemandView, basename='audiance_deman
 router.register('agendas', AgendaView, basename='agenda')
 router.register('discussions', DiscussionView, basename='discussion')
 router.register('social_informations', SocialinformationView, basename='social_information')
-
-
+router.register('danger_informations', DangerInformation, basename='danger_information')
 
 
 urlpatterns = [

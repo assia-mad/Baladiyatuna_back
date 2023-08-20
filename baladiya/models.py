@@ -42,6 +42,11 @@ product_action_choices = [
 discussion_choices = [
     ('Politique','Politique'),
     ('Economique','Economique'),
+    ('Danger','Danger'),
+]
+danger_types = [
+    ('Alerte','Alerte'),
+    ('Information','Information')
 ]
 
 class Wilaya(models.Model):
@@ -167,5 +172,10 @@ class SocialInformation(BaseModel):
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
 
-
-
+class DangerInformation(BaseModel):
+    owner = models.ForeignKey(User, related_name='danger_informations', on_delete=models.CASCADE)
+    image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    type = models.CharField(max_length=15, choices=danger_types)
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'

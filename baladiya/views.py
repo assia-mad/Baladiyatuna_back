@@ -16,7 +16,6 @@ from django.db.models.functions import TruncDate
 import datetime
 from rest_framework.exceptions import ParseError
 from django.utils.dateparse import parse_date
-from .filters import DateFilter
 
 
 
@@ -339,5 +338,16 @@ class SocialinformationView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["owner__role"]
     filter_fields = ["owner__role"]
+    search_fields = ["owner__id", "title", "description", "created_at"]
+    ordering_fields = ["created_at"]
+
+class DangerInformation(viewsets.ModelViewSet):
+    queryset= DangerInformation.objects.all()
+    serializer_class = DangerInformationSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner__role","state"]
+    filter_fields = ["owner__role","state"]
     search_fields = ["owner__id", "title", "description", "created_at"]
     ordering_fields = ["created_at"]

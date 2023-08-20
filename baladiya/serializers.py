@@ -131,3 +131,8 @@ class SocialInformationSerializer(BaseSerializer):
     class Meta:
         model=SocialInformation
         fields= '__all__'
+
+class DangerInformationSerializer(BaseSerializer):
+    class Meta:
+        model = DangerInformation
+        fields = '__all__'
