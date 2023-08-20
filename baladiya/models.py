@@ -179,3 +179,10 @@ class DangerInformation(BaseModel):
     type = models.CharField(max_length=15, choices=danger_types)
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
+
+class Visite(BaseModel):
+    owner = models.ForeignKey(User, related_name='visits', on_delete=models.CASCADE)
+    localisation = models.CharField(max_length=50)
+    image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
+    liked_by = models.ManyToManyField(User)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')

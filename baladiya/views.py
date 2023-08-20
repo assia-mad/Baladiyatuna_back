@@ -341,7 +341,7 @@ class SocialinformationView(viewsets.ModelViewSet):
     search_fields = ["owner__id", "title", "description", "created_at"]
     ordering_fields = ["created_at"]
 
-class DangerInformation(viewsets.ModelViewSet):
+class DangerInformationView(viewsets.ModelViewSet):
     queryset= DangerInformation.objects.all()
     serializer_class = DangerInformationSerializer
     pagination_class = CustomPagination
@@ -350,4 +350,15 @@ class DangerInformation(viewsets.ModelViewSet):
     filterset_fields = ["owner__role","state"]
     filter_fields = ["owner__role","state"]
     search_fields = ["owner__id", "title", "description", "created_at"]
+    ordering_fields = ["created_at"]
+
+class VisiteView(viewsets.ModelViewSet):
+    queryset= DangerInformation.objects.all()
+    serializer_class = VisiteSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner__role","state","liked_by"]
+    filter_fields = ["owner__role","state","liked_by"]
+    search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation"]
     ordering_fields = ["created_at"]

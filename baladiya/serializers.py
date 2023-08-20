@@ -136,3 +136,8 @@ class DangerInformationSerializer(BaseSerializer):
     class Meta:
         model = DangerInformation
         fields = '__all__'
+
+class VisiteSerializer(BaseSerializer):
+    class Meta:
+        model = Visite
+        fields = '__all__'
