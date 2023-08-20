@@ -10,8 +10,14 @@ import random
 from django.core.mail import send_mail
 from rest_framework.response import Response
 from .pagination import CustomPagination
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend,BaseInFilter, CharFilter
+from rest_framework.filters import SearchFilter, OrderingFilter, BaseFilterBackend 
+from django.db.models.functions import TruncDate
+import datetime
+from rest_framework.exceptions import ParseError
+from django.utils.dateparse import parse_date
+from .filters import DateFilter
+
 
 
 class CustomRegisterView(RegisterView):
@@ -158,14 +164,25 @@ class ManageUsersView(viewsets.ModelViewSet):
         "social_approved",
     ]
 
+# class StateFilter(BaseInFilter, CharFilter):
+#     pass
+
+# class CustomFilterBackend(DjangoFilterBackend):
+#     def get_filterset_class(self, view, queryset=None):
+#         filterset_class = super().get_filterset_class(view, queryset)
+        
+#         if view.action == 'list' and 'state' in view.request.GET:
+#             filterset_class.declared_filters['state'] = StateFilter(field_name='state', lookup_expr='in')
+            
+#         return filterset_class
 
 class FormationView(viewsets.ModelViewSet):
     serializer_class = FormationSerializer
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["date", "localisation", "owner", "state"]
-    filterset_fields = ["date", "localisation", "owner", "state"]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter ]
+    filter_fields = ["state"]
+    filterset_fields = [ "state"]
     search_fields = [
         "owner__id",
         "localisation",
@@ -298,8 +315,8 @@ class AgendaView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner","date"]
-    filterset_fields = ["owner","date"]
+    filter_fields = ["owner","date__date"]
+    filterset_fields = ["owner","date__date"]
     search_fields = ["owner__id", "title", "description", "created_at", "date","localisation"]
     ordering_fields = ["created_at", "date"]
 
@@ -313,3 +330,14 @@ class DiscussionView(viewsets.ModelViewSet):
     filter_fields = ["owner", "type"]
     search_fields = ["owner__id", "title", "description", "created_at", "type", "state"]
     ordering_fields = ["created_at", "state"]
+
+class SocialinformationView(viewsets.ModelViewSet):
+    queryset = SocialInformation.objects.all()
+    serializer_class = SocialInformationSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner__role"]
+    filter_fields = ["owner__role"]
+    search_fields = ["owner__id", "title", "description", "created_at"]
+    ordering_fields = ["created_at"]
