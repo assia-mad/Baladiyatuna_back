@@ -12,7 +12,6 @@ role_choices = [
 ]
 topic_choices = [
     ('Sportif','Sportif'),
-    ('Social','Social'),
     ('Culturel','Culturel'),
     ('Audiance','Audiance'),
     ('Economique','Economique'),
@@ -135,6 +134,7 @@ class EcologicalInformation(BaseModel):
     owner = models.ForeignKey(User, related_name='ecological_informations', on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
     type = models.CharField(max_length=15, choices=ecological_info_choices)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
@@ -151,6 +151,7 @@ class Product(models.Model):
 class AudianceDemand(BaseModel):
     owner = models.ForeignKey(User, related_name='audiance_demands',on_delete=models.CASCADE)
     date = models.DateField()
+    person = models.CharField(max_length=50)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
 class Agenda(BaseModel):
@@ -160,5 +161,11 @@ class Agenda(BaseModel):
     image = models.ImageField(null=True, blank=True, upload_to='agenda_images')
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
+
+class SocialInformation(BaseModel):
+    owner = models.ForeignKey(User, related_name='social_informations', on_delete=models.CASCADE)
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+
 
 

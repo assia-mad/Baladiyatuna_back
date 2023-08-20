@@ -126,3 +126,8 @@ class DiscussionSerializer(BaseSerializer):
     class Meta:
         model = Discussion
         fields = '__all__'
+
+class SocialInformationSerializer(BaseSerializer):
+    class Meta:
+        model=SocialInformation
+        fields= '__all__'

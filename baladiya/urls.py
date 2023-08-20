@@ -36,6 +36,7 @@ router.register('products', ProductView, basename='product')
 router.register('audiance_demands', AudianceDemandView, basename='audiance_demand')
 router.register('agendas', AgendaView, basename='agenda')
 router.register('discussions', DiscussionView, basename='discussion')
+router.register('social_informations', SocialinformationView, basename='social_information')
 
 
 
