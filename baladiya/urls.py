@@ -54,6 +54,8 @@ urlpatterns = [
    path('password-reset/', ResetRequestView.as_view()),
    path('password-change/', PasswordChangeView.as_view(), name='password_change'),
    path('user/', CustomUserDetailsView.as_view()),
+   path('historiques/', HistoriqueListCreateView.as_view(), name='historique-list-create'),
+   path('historiques/<int:pk>/', HistoriqueRetrieveUpdateDeleteView.as_view(), name='historique-retrieve-update-delete'),
    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

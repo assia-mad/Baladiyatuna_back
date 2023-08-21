@@ -141,3 +141,9 @@ class VisiteSerializer(BaseSerializer):
     class Meta:
         model = Visite
         fields = '__all__'
+
+
+class HistoriqueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Historique
+        fields = '__all__'

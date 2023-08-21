@@ -186,3 +186,13 @@ class Visite(BaseModel):
     image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
     liked_by = models.ManyToManyField(User)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+
+
+class Historique(models.Model):
+    title = models.CharField(max_length=255)
+    date = models.DateField()
+    commune = models.IntegerField()
+    owner = models.ForeignKey(User,related_name='historique', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title

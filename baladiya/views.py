@@ -353,7 +353,7 @@ class DangerInformationView(viewsets.ModelViewSet):
     ordering_fields = ["created_at"]
 
 class VisiteView(viewsets.ModelViewSet):
-    queryset= DangerInformation.objects.all()
+    queryset= Visite.objects.all()
     serializer_class = VisiteSerializer
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
@@ -362,3 +362,24 @@ class VisiteView(viewsets.ModelViewSet):
     filter_fields = ["owner__role","state","liked_by"]
     search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation"]
     ordering_fields = ["created_at"]
+
+
+class HistoriqueListCreateView(generics.ListCreateAPIView):
+    queryset = Historique.objects.all()
+    serializer_class = HistoriqueSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    ordering_fields = ["date"]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(owner=user)  
+
+class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Historique.objects.all()
+    serializer_class = HistoriqueSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    ordering_fields = ["date"]
