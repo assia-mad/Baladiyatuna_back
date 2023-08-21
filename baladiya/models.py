@@ -154,10 +154,11 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class AudianceDemand(BaseModel):
-    owner = models.ForeignKey(User, related_name='audiance_demands',on_delete=models.CASCADE)
-    date = models.DateField()
-    person = models.CharField(max_length=50)
-    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    owner = models.ForeignKey(User, related_name='audiance_demands', on_delete=models.CASCADE)
+    date = models.DateField(null=True, blank=True)
+    person = models.CharField(max_length=50, blank=True)  # Make the person field optional
+    state = models.CharField(max_length=20, choices=state_choices, default='en traitement')
+
 
 class Agenda(BaseModel):
     owner = models.ForeignKey(User, related_name='agendas', on_delete=models.CASCADE, null=False)
