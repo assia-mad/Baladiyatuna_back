@@ -358,24 +358,33 @@ class HistoriqueFilter(django_filters.FilterSet):
     class Meta:
         model = Historique
         fields = ['commune']
+
 class HistoriqueListCreateView(generics.ListCreateAPIView):
     queryset = Historique.objects.all()
     serializer_class = HistoriqueSerializer
-    pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filterset_class = HistoriqueFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    ordering_fields = ["date","commune"]
+    ordering_fields = ["date", "commune"]
 
     def perform_create(self, serializer):
         user = self.request.user
-        serializer.save(owner=user)  
+        serializer.save(owner=user)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Historique.objects.all()
     serializer_class = HistoriqueSerializer
-    pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filterset_class = HistoriqueFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    ordering_fields = ["date","commune"]
+    ordering_fields = ["date", "commune"]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
