@@ -16,6 +16,7 @@ from django.db.models.functions import TruncDate
 import datetime
 from rest_framework.exceptions import ParseError
 from django.utils.dateparse import parse_date
+import django_filters
 
 
 
@@ -350,3 +351,31 @@ class VisiteView(viewsets.ModelViewSet):
     filter_fields = ["owner__role","state","liked_by"]
     search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation"]
     ordering_fields = ["created_at"]
+
+class HistoriqueFilter(django_filters.FilterSet):
+    commune = django_filters.NumberFilter(field_name='commune')
+
+    class Meta:
+        model = Historique
+        fields = ['commune']
+class HistoriqueListCreateView(generics.ListCreateAPIView):
+    queryset = Historique.objects.all()
+    serializer_class = HistoriqueSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filterset_class = HistoriqueFilter
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    ordering_fields = ["date","commune"]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(owner=user)  
+
+class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Historique.objects.all()
+    serializer_class = HistoriqueSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filterset_class = HistoriqueFilter
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    ordering_fields = ["date","commune"]
