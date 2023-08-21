@@ -48,7 +48,10 @@ danger_types = [
     ('Alerte','Alerte'),
     ('Information','Information')
 ]
-
+information_types = [
+    ('Social','Social'),
+    ('Politique','Politique')
+]
 class Wilaya(models.Model):
     name = models.CharField(max_length=20, null=False)
 
@@ -89,6 +92,7 @@ class Formation(BaseModel):
     date = models.DateTimeField()
     localisation = models.CharField(max_length=50)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    type = models.CharField(max_length=15, choices=information_types, null=True, blank=True)#non null
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
 
