@@ -220,8 +220,8 @@ class TopicView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner", "type", "state"]
-    filter_fields = ["owner", "type"]
+    filterset_fields = ["owner__role", "type", "state"]
+    filter_fields = ["owner__role", "type"]
     search_fields = ["owner__id", "title", "description", "created_at", "type", "state"]
     ordering_fields = ["created_at", "state"]
 
@@ -258,8 +258,8 @@ class EcologicalInformationView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner", "type"]
-    filterset_fields = ["owner", "type"]
+    filter_fields = ["owner__role", "type"]
+    filterset_fields = ["owner__role", "type"]
     search_fields = ["owner__id", "title", "description", "created_at", "type"]
     ordering_fields = ["created_at", "date"]
 
@@ -288,8 +288,8 @@ class AudianceDemandView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner", "state"]
-    filterset_fields = ["owner", "state"]
+    filter_fields = ["owner__role", "state"]
+    filterset_fields = ["owner__role", "state"]
     search_fields = ["owner__id", "title", "description", "created_at", "state", "date"]
     ordering_fields = ["created_at", "date"]
 
@@ -303,8 +303,8 @@ class AgendaView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner","date__date"]
-    filterset_fields = ["owner","date__date"]
+    filter_fields = ["owner__role","date__date"]
+    filterset_fields = ["owner__role","date__date"]
     search_fields = ["owner__id", "title", "description", "created_at", "date","localisation"]
     ordering_fields = ["created_at", "date"]
 
@@ -358,6 +358,7 @@ class HistoriqueFilter(django_filters.FilterSet):
     class Meta:
         model = Historique
         fields = ['commune']
+        
 class HistoriqueListCreateView(generics.ListCreateAPIView):
     queryset = Historique.objects.all()
     serializer_class = HistoriqueSerializer
