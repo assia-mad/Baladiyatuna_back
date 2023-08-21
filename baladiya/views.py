@@ -163,25 +163,13 @@ class ManageUsersView(viewsets.ModelViewSet):
         "social_approved",
     ]
 
-# class StateFilter(BaseInFilter, CharFilter):
-#     pass
-
-# class CustomFilterBackend(DjangoFilterBackend):
-#     def get_filterset_class(self, view, queryset=None):
-#         filterset_class = super().get_filterset_class(view, queryset)
-        
-#         if view.action == 'list' and 'state' in view.request.GET:
-#             filterset_class.declared_filters['state'] = StateFilter(field_name='state', lookup_expr='in')
-            
-#         return filterset_class
-
 class FormationView(viewsets.ModelViewSet):
     serializer_class = FormationSerializer
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter ]
-    filter_fields = ["state"]
-    filterset_fields = [ "state"]
+    filter_fields = ["state","type","owner__role"]
+    filterset_fields = [ "state","type","owner__role"]
     search_fields = [
         "owner__id",
         "localisation",
@@ -336,7 +324,7 @@ class SocialinformationView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner__role"]
+    filterset_fields = ["owner__role","title"]
     filter_fields = ["owner__role"]
     search_fields = ["owner__id", "title", "description", "created_at"]
     ordering_fields = ["created_at"]
@@ -353,7 +341,7 @@ class DangerInformationView(viewsets.ModelViewSet):
     ordering_fields = ["created_at"]
 
 class VisiteView(viewsets.ModelViewSet):
-    queryset= DangerInformation.objects.all()
+    queryset= Visite.objects.all()
     serializer_class = VisiteSerializer
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
