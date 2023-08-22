@@ -198,6 +198,7 @@ class Historique(models.Model):
     date = models.DateField()
     commune = models.IntegerField()
     owner = models.ForeignKey(User,related_name='historique', on_delete=models.CASCADE)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self):
         return self.title

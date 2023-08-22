@@ -365,6 +365,9 @@ class HistoriqueListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     filterset_class = HistoriqueFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["state"]
+    filter_fields = ["state"]
+
     ordering_fields = ["date", "commune"]
 
     def perform_create(self, serializer):
@@ -383,7 +386,9 @@ class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     filterset_class = HistoriqueFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     ordering_fields = ["date", "commune"]
-
+    filterset_fields = ["state"]
+    filter_fields = ["state"]
+    
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
