@@ -357,7 +357,7 @@ class HistoriqueFilter(django_filters.FilterSet):
 
     class Meta:
         model = Historique
-        fields = ['commune']
+        fields = ['commune','state']
 
 class HistoriqueListCreateView(generics.ListCreateAPIView):
     queryset = Historique.objects.all()
