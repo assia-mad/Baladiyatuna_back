@@ -147,3 +147,8 @@ class HistoriqueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Historique
         fields = '__all__'
+
+class EmergencyFunctionsSerializer(BaseSerializer):
+    class Meta:
+        model = EmergencyFunctions
+        fields = '__all__'

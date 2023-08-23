@@ -8,7 +8,7 @@ role_choices = [
     ('Admin','Admin'),
     ('Agent','Agent'),
     ('Association','Association'),
-    ('Entrepreneur','Entreprneur'),
+    ('Entrepreneur','Entrepreneur'),
 ]
 topic_choices = [
     ('Sportif','Sportif'),
@@ -52,6 +52,11 @@ formation_types = [
     ('Social','Social'),
     ('Economique','Economique')
 ]
+emergency_types = [
+    ('Gaz','Gaz'),
+    ('Incendie','Incendie')
+]
+
 class Wilaya(models.Model):
     name = models.CharField(max_length=20, null=False)
 
@@ -182,6 +187,7 @@ class DangerInformation(BaseModel):
     image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
     type = models.CharField(max_length=15, choices=danger_types)
+
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
 
@@ -192,6 +198,9 @@ class Visite(BaseModel):
     liked_by = models.ManyToManyField(User)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
+
 
 class Historique(models.Model):
     title = models.CharField(max_length=255)
@@ -201,3 +210,12 @@ class Historique(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class EmergencyFunctions(BaseModel):
+    owner = models.ForeignKey(User, related_name='emergency_functions', on_delete=models.CASCADE)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    type = models.CharField(max_length=20, choices=emergency_types)
+
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'

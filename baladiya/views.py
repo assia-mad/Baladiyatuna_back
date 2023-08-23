@@ -347,7 +347,7 @@ class VisiteView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner__role","state","liked_by"]
+    filterset_fields = ["owner__role","state","liked_by","commune"]
     filter_fields = ["owner__role","state","liked_by"]
     search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation"]
     ordering_fields = ["created_at"]
@@ -388,3 +388,14 @@ class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+class EmergencyFunctionsView(viewsets.ModelViewSet):
+    queryset= EmergencyFunctions.objects.all()
+    serializer_class = EmergencyFunctionsSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner__role","state","type"]
+    filter_fields = ["owner__role","state","type"]
+    search_fields = ["owner__id", "title", "description", "created_at","type"]
+    ordering_fields = ["created_at"]

@@ -31,7 +31,7 @@ router.register('accompagnements', AccompagnementView, basename='accompagnement'
 router.register('topics', TopicView, basename='topic')
 router.register('activities', ActivityView, basename='activity')
 router.register('comments', CommentView, basename='comment')
-router.register('ecological_infos', EcologicalInformationView, basename='ecological_info')
+router.register('ecological_informations', EcologicalInformationView, basename='ecological_info')
 router.register('products', ProductView, basename='product')
 router.register('audiance_demands', AudianceDemandView, basename='audiance_demand')
 router.register('agendas', AgendaView, basename='agenda')
@@ -39,6 +39,7 @@ router.register('discussions', DiscussionView, basename='discussion')
 router.register('social_informations', SocialinformationView, basename='social_information')
 router.register('danger_informations', DangerInformationView, basename='danger_information')
 router.register('visits', VisiteView , basename='visite')
+router.register('emergencies', EmergencyFunctionsView, basename='emergency_function')
 
 
 urlpatterns = [
