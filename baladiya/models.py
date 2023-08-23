@@ -194,8 +194,9 @@ class DangerInformation(BaseModel):
 class Visite(BaseModel):
     owner = models.ForeignKey(User, related_name='visits', on_delete=models.CASCADE)
     localisation = models.CharField(max_length=50)
+    commune = models.IntegerField()
     image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
-    liked_by = models.ManyToManyField(User)
+    liked_by = models.ManyToManyField(User, blank=True)  # Allow an empty liked_by list
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
@@ -207,6 +208,7 @@ class Historique(models.Model):
     date = models.DateField()
     commune = models.IntegerField()
     owner = models.ForeignKey(User,related_name='historique', on_delete=models.CASCADE)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self):
         return self.title

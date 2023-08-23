@@ -336,9 +336,9 @@ class DangerInformationView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner__role","state"]
-    filter_fields = ["owner__role","state"]
-    search_fields = ["owner__id", "title", "description", "created_at"]
+    filterset_fields = ["owner__role","state","type"]
+    filter_fields = ["owner__role","state","type"]
+    search_fields = ["owner__id", "title", "description", "created_at","type"]
     ordering_fields = ["created_at"]
 
 class VisiteView(viewsets.ModelViewSet):
@@ -348,8 +348,8 @@ class VisiteView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["owner__role","state","liked_by","commune"]
-    filter_fields = ["owner__role","state","liked_by"]
-    search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation"]
+    filter_fields = ["owner__role","state","liked_by","commune"]
+    search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation","commune"]
     ordering_fields = ["created_at"]
 
 class HistoriqueFilter(django_filters.FilterSet):
@@ -357,7 +357,7 @@ class HistoriqueFilter(django_filters.FilterSet):
 
     class Meta:
         model = Historique
-        fields = ['commune']
+        fields = ['commune','state']
 
 class HistoriqueListCreateView(generics.ListCreateAPIView):
     queryset = Historique.objects.all()
@@ -365,6 +365,9 @@ class HistoriqueListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     filterset_class = HistoriqueFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["state"]
+    filter_fields = ["state"]
+
     ordering_fields = ["date", "commune"]
 
     def perform_create(self, serializer):
@@ -383,7 +386,9 @@ class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     filterset_class = HistoriqueFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     ordering_fields = ["date", "commune"]
-
+    filterset_fields = ["state"]
+    filter_fields = ["state"]
+    
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
