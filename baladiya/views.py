@@ -336,9 +336,9 @@ class DangerInformationView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner__role","state"]
-    filter_fields = ["owner__role","state"]
-    search_fields = ["owner__id", "title", "description", "created_at"]
+    filterset_fields = ["owner__role","state","commune"]
+    filter_fields = ["owner__role","state","commune"]
+    search_fields = ["owner__id", "title", "description", "created_at","commune"]
     ordering_fields = ["created_at"]
 
 class VisiteView(viewsets.ModelViewSet):
