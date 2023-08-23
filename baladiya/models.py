@@ -180,7 +180,6 @@ class SocialInformation(BaseModel):
 class DangerInformation(BaseModel):
     owner = models.ForeignKey(User, related_name='danger_informations', on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
-    commune = models.IntegerField()
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
     type = models.CharField(max_length=15, choices=danger_types)
     def __str__(self) -> str:
