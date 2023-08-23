@@ -347,9 +347,9 @@ class VisiteView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner__role","state","liked_by"]
-    filter_fields = ["owner__role","state","liked_by"]
-    search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation"]
+    filterset_fields = ["owner__role","state","liked_by","commune"]
+    filter_fields = ["owner__role","state","liked_by","commune"]
+    search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation","commune"]
     ordering_fields = ["created_at"]
 
 class HistoriqueFilter(django_filters.FilterSet):
