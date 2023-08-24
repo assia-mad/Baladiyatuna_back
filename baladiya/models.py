@@ -195,12 +195,23 @@ class Visite(BaseModel):
     owner = models.ForeignKey(User, related_name='visits', on_delete=models.CASCADE)
     localisation = models.CharField(max_length=50)
     commune = models.IntegerField()
-    image = models.ImageField(null=True, blank=True, upload_to='ecological_infos_images')
-    liked_by = models.ManyToManyField(User, blank=True)  # Allow an empty liked_by list
+    image = models.ImageField(null=True, blank=True, upload_to='visites_images')
+    liked_by = models.ManyToManyField(User, blank=True,null=True)  # Allow an empty liked_by list
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
+
+class Album(models.Model):
+    image = models.ImageField(upload_to='visites_images')
+    name = models.CharField(max_length=50)
+    commune = models.IntegerField()
+    owner = models.ForeignKey(User, related_name='albums', on_delete=models.CASCADE)
+    liked_by = models.ManyToManyField(User, blank=True,null=True)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+
+    def __str__(self) -> str:
+        return f'{self.name} {self.owner}'
 
 
 class Historique(models.Model):
@@ -221,3 +232,4 @@ class EmergencyFunctions(BaseModel):
 
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
+

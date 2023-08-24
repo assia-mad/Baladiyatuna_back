@@ -367,7 +367,6 @@ class HistoriqueListCreateView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["state"]
     filter_fields = ["state"]
-
     ordering_fields = ["date", "commune"]
 
     def perform_create(self, serializer):
@@ -403,4 +402,15 @@ class EmergencyFunctionsView(viewsets.ModelViewSet):
     filterset_fields = ["owner__role","state","type"]
     filter_fields = ["owner__role","state","type"]
     search_fields = ["owner__id", "title", "description", "created_at","type"]
+    ordering_fields = ["created_at"]
+
+class AlbumView(viewsets.ModelViewSet):
+    queryset= Album.objects.all()
+    serializer_class = AlbumSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner__role","state","commune"]
+    filter_fields = ["owner__role","state","commune"]
+    search_fields = ["owner__id","name","state","commune"]
     ordering_fields = ["created_at"]

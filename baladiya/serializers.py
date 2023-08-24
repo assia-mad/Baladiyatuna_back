@@ -142,6 +142,10 @@ class VisiteSerializer(BaseSerializer):
         model = Visite
         fields = '__all__'
 
+class AlbumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Album
+        fields = '__all__'
 
 class HistoriqueSerializer(serializers.ModelSerializer):
     class Meta:
