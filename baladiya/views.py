@@ -414,3 +414,14 @@ class AlbumView(viewsets.ModelViewSet):
     filter_fields = ["owner__role","state","commune"]
     search_fields = ["owner__id","name","state","commune"]
     ordering_fields = ["created_at"]
+
+class ActualityView(viewsets.ModelViewSet):
+    queryset= Actuality.objects.all()
+    serializer_class = ActualitySerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner__role","state","type"]
+    filter_fields = ["owner__role","state","type"]
+    search_fields = ["owner__id","title", "description","state","type","created_at"]
+    ordering_fields = ["created_at"]

@@ -156,3 +156,8 @@ class EmergencyFunctionsSerializer(BaseSerializer):
     class Meta:
         model = EmergencyFunctions
         fields = '__all__'
+
+class ActualitySerializer(BaseSerializer):
+    class Meta:
+        model = Actuality
+        fields = '__all__'

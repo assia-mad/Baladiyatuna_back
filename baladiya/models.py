@@ -56,6 +56,12 @@ emergency_types = [
     ('Gaz','Gaz'),
     ('Incendie','Incendie')
 ]
+actuality_types = [
+    ('Realisation','Realisation'),
+    ('Education','Education'),
+    ('Entreprise','Entreprise'),
+    ('Sport','Sport')
+]
 
 class Wilaya(models.Model):
     name = models.CharField(max_length=20, null=False)
@@ -233,3 +239,12 @@ class EmergencyFunctions(BaseModel):
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
 
+class Actuality(BaseModel):
+    owner = models.ForeignKey(User, related_name='actualities', on_delete=models.CASCADE)
+    date = models.DateField(null=True,blank=True)
+    file = models.FileField(upload_to='videos/', null=True, blank=True)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    type = models.CharField(max_length=20,choices=actuality_types)
+
+    def __str__(self) -> str:
+        return f'{self.title} {self.owner}'
