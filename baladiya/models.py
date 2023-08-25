@@ -202,7 +202,7 @@ class Visite(BaseModel):
     localisation = models.CharField(max_length=50)
     commune = models.IntegerField()
     image = models.ImageField(null=True, blank=True, upload_to='visites_images')
-    liked_by = models.ManyToManyField(User, blank=True,null=True)  # Allow an empty liked_by list
+    liked_by = models.ManyToManyField(User, blank=True)  # Allow an empty liked_by list
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
@@ -213,7 +213,7 @@ class Album(models.Model):
     name = models.CharField(max_length=50)
     commune = models.IntegerField()
     owner = models.ForeignKey(User, related_name='albums', on_delete=models.CASCADE)
-    liked_by = models.ManyToManyField(User, blank=True,null=True)
+    liked_by = models.ManyToManyField(User, blank=True)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
@@ -241,7 +241,7 @@ class EmergencyFunctions(BaseModel):
 
 class Actuality(BaseModel):
     owner = models.ForeignKey(User, related_name='actualities', on_delete=models.CASCADE)
-    date = models.DateField(null=True,blank=True)
+    date = models.DateTimeField(blank=True, null=True)
     file = models.FileField(upload_to='videos/', null=True, blank=True)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
     type = models.CharField(max_length=20,choices=actuality_types)
@@ -251,7 +251,7 @@ class Actuality(BaseModel):
 
 class Study(BaseModel):
     owner = models.ForeignKey(User, related_name='studies', on_delete=models.CASCADE)
-    date = models.DateField()
+    date = models.DateField(null=True, blank=True)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
