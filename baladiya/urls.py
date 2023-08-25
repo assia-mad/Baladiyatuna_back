@@ -40,7 +40,13 @@ router.register('social_informations', SocialinformationView, basename='social_i
 router.register('danger_informations', DangerInformationView, basename='danger_information')
 router.register('visits', VisiteView , basename='visite')
 router.register('emergencies', EmergencyFunctionsView, basename='emergency_function')
+router.register('albums', AlbumView, basename='album')
 router.register('actualities', ActualityView, basename='actuality')
+router.register('studies', StudyView, basename='study')
+router.register('surveys', SurveyView, basename='survey')
+router.register('choices', ChoiceView, basename='choice')
+
+
 
 
 urlpatterns = [

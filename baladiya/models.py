@@ -248,3 +248,25 @@ class Actuality(BaseModel):
 
     def __str__(self) -> str:
         return f'{self.title} {self.owner}'
+
+class Study(BaseModel):
+    owner = models.ForeignKey(User, related_name='studies', on_delete=models.CASCADE)
+    date = models.DateField()
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+
+    def __str__(self) -> str:
+        return f'{self.title} {self.owner}'
+
+class Survey(BaseModel):
+    owner = models.ForeignKey(User, related_name='surveys', on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f'{self.title} {self.owner}'
+    
+class Choice(models.Model):
+    name = models.CharField(max_length=50)
+    votes_number = models.PositiveIntegerField()
+    survey = models.ForeignKey(Survey, related_name='choices', on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f'{self.survey.title} {self.name}'
