@@ -41,6 +41,7 @@ router.register('danger_informations', DangerInformationView, basename='danger_i
 router.register('visits', VisiteView , basename='visite')
 router.register('emergencies', EmergencyFunctionsView, basename='emergency_function')
 router.register('actualities', ActualityView, basename='actuality')
+router.register('albums', AlbumView, basename='album')
 
 
 urlpatterns = [
