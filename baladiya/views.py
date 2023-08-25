@@ -425,3 +425,36 @@ class ActualityView(viewsets.ModelViewSet):
     filter_fields = ["owner__role","state","type"]
     search_fields = ["owner__id","title", "description","state","type","created_at"]
     ordering_fields = ["created_at"]
+
+class StudyView(viewsets.ModelViewSet):
+    queryset= Study.objects.all()
+    serializer_class = StudySerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner__role","state"]
+    filter_fields = ["owner__role","state"]
+    search_fields = ["owner__id","title", "description","state","date","created_at"]
+    ordering_fields = ["created_at"]
+
+class SurveyView(viewsets.ModelViewSet):
+    queryset= Survey.objects.all()
+    serializer_class = SurveySerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner__role"]
+    filter_fields = ["owner__role"]
+    search_fields = ["owner__id","title", "description","created_at"]
+    ordering_fields = ["created_at"]
+
+class ChoiceView(viewsets.ModelViewSet):
+    queryset= Choice.objects.all()
+    serializer_class = ChoiceSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["survey"]
+    filter_fields = ["survey"]
+    search_fields = ["name","votes_number"]
+    ordering_fields = ["votes_number"]

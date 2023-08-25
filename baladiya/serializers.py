@@ -161,3 +161,18 @@ class ActualitySerializer(BaseSerializer):
     class Meta:
         model = Actuality
         fields = '__all__'
+
+class StudySerializer(BaseSerializer):
+    class Meta:
+        model = Study
+        fields = '__all__'
+
+class SurveySerializer(BaseSerializer):
+    class Meta:
+        model = Survey
+        fields = '__all__'
+
+class ChoiceSerializer(BaseSerializer):
+    class Meta:
+        model = Choice
+        fields = '__all__'
