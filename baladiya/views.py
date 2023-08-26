@@ -450,14 +450,19 @@ class SurveyView(viewsets.ModelViewSet):
     ordering_fields = ["created_at"]
 
 class ChoiceView(viewsets.ModelViewSet):
-    queryset= Choice.objects.all()
+    queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
-    pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["survey"]
     filter_fields = ["survey"]
     search_fields = ["name"]
+
+    def paginate_queryset(self, queryset):
+        """
+        Override this method to disable pagination.
+        """
+        return None
 
 class VotedChoicesByUserAndSurvey(APIView):
     def get(self, request, user_id, survey_id, format=None):
