@@ -259,13 +259,14 @@ class Study(BaseModel):
 
 class Survey(BaseModel):
     owner = models.ForeignKey(User, related_name='surveys', on_delete=models.CASCADE)
+    voted_by = models.ManyToManyField(User, blank=True,null=True)  
 
     def __str__(self) -> str:
         return f'{self.title} {self.owner}'
     
 class Choice(models.Model):
     name = models.CharField(max_length=50)
-    votes_number = models.PositiveIntegerField()
+    voted_by = models.ManyToManyField(User, blank=True,null=True)  
     survey = models.ForeignKey(Survey, related_name='choices', on_delete=models.CASCADE)
 
     def __str__(self) -> str:

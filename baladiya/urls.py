@@ -64,7 +64,9 @@ urlpatterns = [
    path('user/', CustomUserDetailsView.as_view()),
    path('historiques/', HistoriqueListCreateView.as_view(), name='historique-list-create'),
    path('historiques/<int:pk>/', HistoriqueRetrieveUpdateDeleteView.as_view(), name='historique-retrieve-update-delete'),
-   re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+   path('choices/voted_by_user&survey/<int:user_id>/<int:survey_id>/', VotedChoicesByUserAndSurvey.as_view(), name='voted-choices-by-user'),
+   path('surveys/voted_by/<int:user_id>/', VotedSurveyByUser.as_view(), name='voted-surveys-by-user'),
+   path('surveys/no_voted_by/<int:user_id>/', NoVotedSurveyByUser.as_view(), name='voted-surveys-by-user'),
    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 

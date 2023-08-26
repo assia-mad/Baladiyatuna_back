@@ -17,6 +17,7 @@ import datetime
 from rest_framework.exceptions import ParseError
 from django.utils.dateparse import parse_date
 import django_filters
+from rest_framework.views import APIView
 
 
 
@@ -456,5 +457,35 @@ class ChoiceView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["survey"]
     filter_fields = ["survey"]
-    search_fields = ["name","votes_number"]
-    ordering_fields = ["votes_number"]
+    search_fields = ["name"]
+
+class VotedChoicesByUserAndSurvey(APIView):
+    def get(self, request, user_id, survey_id, format=None):
+        voted_choices = Choice.objects.filter(voted_by=user_id, survey=survey_id)
+        serializer = ChoiceSerializer(voted_choices, many=True)
+        return Response(serializer.data)
+
+class VotedSurveyByUser(APIView):
+    pagination_class = CustomPagination
+    
+    def get(self, request, user_id, format=None):
+        voted_choices = Survey.objects.filter(voted_by=user_id)
+        
+        paginator = self.pagination_class()
+        paginated_voted_choices = paginator.paginate_queryset(voted_choices, request)
+        
+        serializer = SurveySerializer(paginated_voted_choices, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+
+class NoVotedSurveyByUser(APIView):
+    pagination_class = CustomPagination
+    
+    def get(self, request, user_id, format=None):
+        voted_choices = Survey.objects.exclude(voted_by=user_id)
+        
+        paginator = self.pagination_class()
+        paginated_voted_choices = paginator.paginate_queryset(voted_choices, request)
+        
+        serializer = SurveySerializer(paginated_voted_choices, many=True)
+        return paginator.get_paginated_response(serializer.data)
