@@ -459,17 +459,15 @@ class ChoiceView(viewsets.ModelViewSet):
     search_fields = ["name"]
 
     def paginate_queryset(self, queryset):
-        """
-        Override this method to disable pagination.
-        """
+        
         return None
 
-class VotedChoicesByUserAndSurvey(APIView):
+""" class VotedChoicesByUserAndSurvey(APIView):
     def get(self, request, user_id, survey_id, format=None):
         voted_choices = Choice.objects.filter(voted_by=user_id, survey=survey_id)
         serializer = ChoiceSerializer(voted_choices, many=True)
         return Response(serializer.data)
-
+ """
 class VotedSurveyByUser(APIView):
     pagination_class = CustomPagination
     
