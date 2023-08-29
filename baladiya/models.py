@@ -271,3 +271,12 @@ class Choice(models.Model):
 
     def __str__(self) -> str:
         return f'{self.survey.title} {self.name}'
+
+
+class BedsActuality(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    image = models.ImageField(null=True, blank=True, upload_to='beds_images')
+
+    def __str__(self):
+        return self.title

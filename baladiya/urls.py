@@ -45,6 +45,7 @@ router.register('actualities', ActualityView, basename='actuality')
 router.register('studies', StudyView, basename='study')
 router.register('surveys', SurveyView, basename='survey')
 router.register('choices', ChoiceView, basename='choice')
+router.register('beds_actuality', BedsActualityView, basename='beds_actuality')
 
 
 

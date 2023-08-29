@@ -176,3 +176,9 @@ class ChoiceSerializer(BaseSerializer):
     class Meta:
         model = Choice
         fields = '__all__'
+
+
+class BedsActualitySerializer(BaseSerializer):
+    class Meta:
+        model = BedsActuality
+        fields = '__all__'

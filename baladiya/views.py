@@ -394,6 +394,7 @@ class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+
 class EmergencyFunctionsView(viewsets.ModelViewSet):
     queryset= EmergencyFunctions.objects.all()
     serializer_class = EmergencyFunctionsSerializer
@@ -404,6 +405,8 @@ class EmergencyFunctionsView(viewsets.ModelViewSet):
     filter_fields = ["owner__role","state","type"]
     search_fields = ["owner__id", "title", "description", "created_at","type"]
     ordering_fields = ["created_at"]
+
+
 
 class AlbumView(viewsets.ModelViewSet):
     queryset= Album.objects.all()
@@ -492,3 +495,15 @@ class NoVotedSurveyByUser(APIView):
         
         serializer = SurveySerializer(paginated_voted_choices, many=True)
         return paginator.get_paginated_response(serializer.data)
+
+
+class BedsActualityView(viewsets.ModelViewSet):
+    queryset = BedsActuality.objects.all()
+    serializer_class = BedsActualitySerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+
+    def paginate_queryset(self, queryset):
+        
+        return None
