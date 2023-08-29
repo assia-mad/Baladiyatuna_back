@@ -277,6 +277,10 @@ class BedsActuality(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     image = models.ImageField(null=True, blank=True, upload_to='beds_images')
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.title
+    class Meta:
+        db_table = "baladiya_bedsactuality"  # Make sure this matches the actual table name
+
+
+    

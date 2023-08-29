@@ -501,7 +501,8 @@ class BedsActualityView(viewsets.ModelViewSet):
     queryset = BedsActuality.objects.all()
     serializer_class = BedsActualitySerializer
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_backends = [OrderingFilter]
+    ordering_fields = ["created_at"]
 
 
     def paginate_queryset(self, queryset):
