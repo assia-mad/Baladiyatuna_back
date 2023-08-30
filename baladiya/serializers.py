@@ -176,3 +176,8 @@ class ChoiceSerializer(BaseSerializer):
     class Meta:
         model = Choice
         fields = '__all__'
+
+class CompanyCreationSerializer(BaseSerializer):
+    class Meta:
+        model = CompanyCreation
+        fields = '__all__'

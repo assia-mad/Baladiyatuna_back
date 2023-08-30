@@ -63,7 +63,7 @@ class ResetRequestView(generics.CreateAPIView):
         data = request.data
         email = data["email"]
         user = User.objects.get(email=email)
-        if User.objects.filter(email=email).exists():
+        if user:
             user.otp = random.randint(1000, 9999)
             user.save()
             # send email with otp
@@ -458,3 +458,14 @@ class ChoiceView(viewsets.ModelViewSet):
     filter_fields = ["survey"]
     search_fields = ["name","votes_number"]
     ordering_fields = ["votes_number"]
+
+class CompanyCreationView(viewsets.ModelViewSet):
+    queryset= CompanyCreation.objects.order_by("pk")
+    serializer_class = CompanyCreationSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner","title"]
+    filter_fields = ["owner","title"]
+    search_fields = ["owner__role","title","description","created_at"]
+    ordering_fields = ["created_at"]

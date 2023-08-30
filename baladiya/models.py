@@ -270,3 +270,8 @@ class Choice(models.Model):
 
     def __str__(self) -> str:
         return f'{self.survey.title} {self.name}'
+
+class CompanyCreation(BaseModel):
+    owner = models.ForeignKey(User, related_name='companies_creation', on_delete=models.CASCADE)
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
