@@ -177,7 +177,8 @@ class ChoiceSerializer(BaseSerializer):
         model = Choice
         fields = '__all__'
 
-class CompanyCreationSerializer(BaseSerializer):
+
+class BedsActualitySerializer(BaseSerializer):
     class Meta:
-        model = CompanyCreation
+        model = BedsActuality
         fields = '__all__'

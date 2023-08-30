@@ -259,19 +259,28 @@ class Study(BaseModel):
 
 class Survey(BaseModel):
     owner = models.ForeignKey(User, related_name='surveys', on_delete=models.CASCADE)
+    voted_by = models.ManyToManyField(User, blank=True,null=True)  
 
     def __str__(self) -> str:
         return f'{self.title} {self.owner}'
     
 class Choice(models.Model):
     name = models.CharField(max_length=50)
-    votes_number = models.PositiveIntegerField()
+    voted_by = models.ManyToManyField(User, blank=True,null=True)  
     survey = models.ForeignKey(Survey, related_name='choices', on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f'{self.survey.title} {self.name}'
 
-class CompanyCreation(BaseModel):
-    owner = models.ForeignKey(User, related_name='companies_creation', on_delete=models.CASCADE)
-    def __str__(self) -> str:
-        return f'{self.owner} {self.title}'
+
+class BedsActuality(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    image = models.ImageField(null=True, blank=True, upload_to='beds_images')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "baladiya_bedsactuality"  # Make sure this matches the actual table name
+
+
+    

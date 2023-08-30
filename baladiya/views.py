@@ -17,6 +17,7 @@ import datetime
 from rest_framework.exceptions import ParseError
 from django.utils.dateparse import parse_date
 import django_filters
+from rest_framework.views import APIView
 
 
 
@@ -393,6 +394,7 @@ class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+
 class EmergencyFunctionsView(viewsets.ModelViewSet):
     queryset= EmergencyFunctions.objects.all()
     serializer_class = EmergencyFunctionsSerializer
@@ -403,6 +405,8 @@ class EmergencyFunctionsView(viewsets.ModelViewSet):
     filter_fields = ["owner__role","state","type"]
     search_fields = ["owner__id", "title", "description", "created_at","type"]
     ordering_fields = ["created_at"]
+
+
 
 class AlbumView(viewsets.ModelViewSet):
     queryset= Album.objects.all()
@@ -449,23 +453,11 @@ class SurveyView(viewsets.ModelViewSet):
     ordering_fields = ["created_at"]
 
 class ChoiceView(viewsets.ModelViewSet):
-    queryset= Choice.objects.all()
+    queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
-    pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["survey"]
     filter_fields = ["survey"]
     search_fields = ["name","votes_number"]
     ordering_fields = ["votes_number"]
-
-class CompanyCreationView(viewsets.ModelViewSet):
-    queryset= CompanyCreation.objects.order_by("pk")
-    serializer_class = CompanyCreationSerializer
-    pagination_class = CustomPagination
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner","title"]
-    filter_fields = ["owner","title"]
-    search_fields = ["owner__role","title","description","created_at"]
-    ordering_fields = ["created_at"]

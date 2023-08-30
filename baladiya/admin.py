@@ -10,3 +10,4 @@ admin.site.register(EcologicalInformation)
 admin.site.register(AudianceDemand)
 admin.site.register(Activity)
 admin.site.register(Comment)
+
