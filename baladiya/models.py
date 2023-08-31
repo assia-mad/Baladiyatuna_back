@@ -282,5 +282,8 @@ class BedsActuality(models.Model):
     class Meta:
         db_table = "baladiya_bedsactuality"  # Make sure this matches the actual table name
 
-
+class CompanyCreation(BaseModel):
+    owner = models.ForeignKey(User, related_name='companies_creation', on_delete=models.CASCADE)
+    def __str__(self) -> str:
+        return f'{self.owner} {self.title}'
     
