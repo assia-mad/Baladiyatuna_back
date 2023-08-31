@@ -471,6 +471,8 @@ class ChoiceView(viewsets.ModelViewSet):
         serializer = ChoiceSerializer(voted_choices, many=True)
         return Response(serializer.data)
  """
+
+ 
 class VotedSurveyByUser(APIView):
     pagination_class = CustomPagination
     
