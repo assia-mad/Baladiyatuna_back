@@ -456,6 +456,7 @@ class ChoiceView(viewsets.ModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = None
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["survey"]
     filter_fields = ["survey"]

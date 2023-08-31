@@ -291,9 +291,4 @@ class CompanyCreation(BaseModel):
     type = models.CharField(max_length=10,choices=creation_types)
     def __str__(self) -> str:
         return f'{self.title} {self.owner}'
-
-class CompanyCreation(BaseModel):
-    owner = models.ForeignKey(User, related_name='companies_creation', on_delete=models.CASCADE)
-    def __str__(self) -> str:
-        return f'{self.owner} {self.title}'
     
