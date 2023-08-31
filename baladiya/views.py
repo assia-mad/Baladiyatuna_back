@@ -461,3 +461,53 @@ class ChoiceView(viewsets.ModelViewSet):
     filter_fields = ["survey"]
     search_fields = ["name","votes_number"]
     ordering_fields = ["votes_number"]
+
+
+class VotedChoicesByUserAndSurvey(APIView):
+    def get(self, request, user_id, survey_id, format=None):
+        voted_choices = Choice.objects.filter(voted_by=user_id, survey=survey_id)
+        serializer = ChoiceSerializer(voted_choices, many=True)
+        return Response(serializer.data)
+
+class VotedSurveyByUser(APIView):
+    pagination_class = CustomPagination
+
+    def get(self, request, user_id, format=None):
+        voted_choices = Survey.objects.filter(voted_by=user_id)
+
+        paginator = self.pagination_class()
+        paginated_voted_choices = paginator.paginate_queryset(voted_choices, request)
+
+        serializer = SurveySerializer(paginated_voted_choices, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+
+class NoVotedSurveyByUser(APIView):
+    pagination_class = CustomPagination
+
+    def get(self, request, user_id, format=None):
+        voted_choices = Survey.objects.exclude(voted_by=user_id)
+
+        paginator = self.pagination_class()
+        paginated_voted_choices = paginator.paginate_queryset(voted_choices, request)
+
+        serializer = SurveySerializer(paginated_voted_choices, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+class BedsActualityView(viewsets.ModelViewSet):
+    queryset = BedsActuality.objects.all()
+    serializer_class = BedsActualitySerializer
+    # permission_classes = None
+    pagination_class = None
+    filter_backends = [OrderingFilter]
+    ordering_fields = ["created_at"]
+
+class CompanyCreationView(viewsets.ModelViewSet):
+    queryset = CompanyCreation.objects.all()
+    serializer_class = CompanyCreationSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["title","owner","type"]
+    filter_fields = ["title","owner","type"]
+    search_fields = ["title","owner__name","description","created_at","type"]
+    ordering_fields = ["created_at"]

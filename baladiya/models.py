@@ -62,6 +62,10 @@ actuality_types = [
     ('Entreprise','Entreprise'),
     ('Sport','Sport')
 ]
+creation_types = [
+    ('Social','Social'),
+    ('Economique','Economique')
+]
 
 class Wilaya(models.Model):
     name = models.CharField(max_length=20, null=False)
@@ -279,8 +283,14 @@ class BedsActuality(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to='beds_images')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        db_table = "baladiya_bedsactuality"  # Make sure this matches the actual table name
+    def __str__(self) -> str:
+        return f'{self.title}'
+    
+class CompanyCreation(BaseModel):
+    owner = models.ForeignKey(User, related_name='companies_creation', on_delete=models.CASCADE)
+    type = models.CharField(max_length=10,choices=creation_types)
+    def __str__(self) -> str:
+        return f'{self.title} {self.owner}'
 
 
     
