@@ -64,7 +64,7 @@ class ResetRequestView(generics.CreateAPIView):
         data = request.data
         email = data["email"]
         user = User.objects.get(email=email)
-        if user:
+        if User.objects.filter(email=email).exists():
             user.otp = random.randint(1000, 9999)
             user.save()
             # send email with otp

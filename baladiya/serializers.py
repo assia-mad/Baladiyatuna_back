@@ -182,8 +182,3 @@ class BedsActualitySerializer(BaseSerializer):
     class Meta:
         model = BedsActuality
         fields = '__all__'
-
-class CompanyCreationSerializer(BaseSerializer):
-    class Meta:
-        model = CompanyCreation
-        fields = '__all__'
