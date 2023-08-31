@@ -510,3 +510,15 @@ class BedsActualityView(viewsets.ModelViewSet):
     def paginate_queryset(self, queryset):
         
         return None
+
+
+class CompanyCreationView(viewsets.ModelViewSet):
+    queryset= CompanyCreation.objects.order_by("pk")
+    serializer_class = CompanyCreationSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner","title"]
+    filter_fields = ["owner","title"]
+    search_fields = ["owner__role","title","description","created_at"]
+    ordering_fields = ["created_at"]
