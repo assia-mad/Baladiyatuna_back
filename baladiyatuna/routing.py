@@ -1,9 +1,10 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
-from django.urls import path
-from baladiya import consumers
+from django.urls import path, re_path
+from baladiya.consumers import *
 
-application = ProtocolTypeRouter({
-    "websocket": URLRouter([
-        path("ws/chat/<str:username>/", consumers.ChatConsumer.as_asgi()),
-    ]),
-})
+websocket_urlpatterns = [
+    re_path(
+        r"ws/chat/(?P<first_user_id>\w+)/(?P<second_user_id>\w+)/",
+        ChatConsumer.as_asgi(),
+    ),
+]
