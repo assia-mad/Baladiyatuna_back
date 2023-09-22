@@ -15,14 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path , include
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from baladiya import consumers
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('baladiya/',include('baladiya.urls')),
-    path("ws/chat/<str:username>/", consumers.ChatConsumer.as_asgi())
+    path("admin/", admin.site.urls),
+    path("baladiya/", include("baladiya.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+websocket_urlpatterns = [path("ws/chat/", consumers.ChatConsumer.as_asgi())]

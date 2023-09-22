@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  redis:
+    image: redis:7.0.12-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - cache:/var/lib/redis/
+    networks:
+      - redis-network
+
+networks:
+  redis-network:
+volumes:
+  cache:
