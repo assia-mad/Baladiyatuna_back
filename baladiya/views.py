@@ -18,6 +18,8 @@ from rest_framework.exceptions import ParseError
 from django.utils.dateparse import parse_date
 import django_filters
 from rest_framework.views import APIView
+from rest_framework import generics
+
 
 
 
@@ -350,7 +352,7 @@ class VisiteView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["owner__role","state","liked_by","commune"]
     filter_fields = ["owner__role","state","liked_by","commune"]
-    search_fields = ["owner__id", "title", "description", "created_at","liked_by","localisation","commune"]
+    search_fields = ["owner__id", "title", "description", "created_at","liked_by__id","localisation","commune"]
     ordering_fields = ["created_at"]
 
 class HistoriqueFilter(django_filters.FilterSet):
@@ -512,3 +514,18 @@ class CompanyCreationView(viewsets.ModelViewSet):
     filter_fields = ["title","owner","type"]
     search_fields = ["title","owner__name","description","created_at","type"]
     ordering_fields = ["created_at"]
+
+class MessageListCreateView(generics.ListCreateAPIView):
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        chat_id = self.kwargs['chat_id']
+        return Message.objects.filter(chat_id=chat_id)
+
+class ChatListCreateView(generics.ListCreateAPIView):
+    serializer_class = ChatSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Chat.objects.filter(sender=user) | Chat.objects.filter(receiver=user)
+

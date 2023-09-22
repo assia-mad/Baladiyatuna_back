@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
+    'channels',
     'baladiya',
 ]
 
@@ -143,8 +144,14 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-
-
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 
 # Database
@@ -159,7 +166,7 @@ DATABASES = {
         'PASSWORD': 'assiamdn2001',
         'HOST': '127.0.0.1',
         'PORT': '5432',
-    }
+    },
 }
 
 
@@ -206,8 +213,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import os
 
-# # Actual directory user files go to
-# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'mediafiles')
+# Actual directory user files go to
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'mediafiles')
 
-# # URL used to access the media
-# MEDIA_URL = '/media/'
+# URL used to access the media
+MEDIA_URL = '/media/'
+
+ASGI_APPLICATION = "baladiyatuna.asgi.application"

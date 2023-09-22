@@ -6,6 +6,12 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from baladiya.views import *
+from .consumers import ChatConsumer
+
+
+websocket_urlpatterns = [
+    path("ws/some_path/", ChatConsumer.as_asgi()),  
+]
 
 schema_view = get_schema_view(
 
@@ -53,6 +59,8 @@ router.register('companies_creation', CompanyCreationView, basename="company_cre
 
 urlpatterns = [
    path('', include(router.urls)),
+   path('chats/', ChatListCreateView.as_view(), name='chat-list-create'),
+    path('chats/<int:chat_id>/messages/', MessageListCreateView.as_view(), name='message-list-create'),
    path('password-reset-confirm/', ResetPasswordView.as_view(), name='password_reset_confirm'),
    path('account-confirm-email/<str:key>/', ConfirmEmailView.as_view()),
    path('register/', CustomRegisterView.as_view(), name='register'),

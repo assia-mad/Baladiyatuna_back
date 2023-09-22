@@ -50,7 +50,8 @@ danger_types = [
 ]
 formation_types = [
     ('Social','Social'),
-    ('Economique','Economique')
+    ('Economique','Economique'),
+    ('Politique','Politique')
 ]
 emergency_types = [
     ('Gaz','Gaz'),
@@ -219,6 +220,7 @@ class Album(models.Model):
     owner = models.ForeignKey(User, related_name='albums', on_delete=models.CASCADE)
     liked_by = models.ManyToManyField(User, blank=True)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f'{self.name} {self.owner}'
@@ -263,14 +265,14 @@ class Study(BaseModel):
 
 class Survey(BaseModel):
     owner = models.ForeignKey(User, related_name='surveys', on_delete=models.CASCADE)
-    voted_by = models.ManyToManyField(User, blank=True,null=True)  
+    voted_by = models.ManyToManyField(User, blank=True)  
 
     def __str__(self) -> str:
         return f'{self.title} {self.owner}'
     
 class Choice(models.Model):
     name = models.CharField(max_length=50)
-    voted_by = models.ManyToManyField(User, blank=True,null=True)  
+    voted_by = models.ManyToManyField(User, blank=True)  
     survey = models.ForeignKey(Survey, related_name='choices', on_delete=models.CASCADE)
 
     def __str__(self) -> str:
@@ -291,4 +293,21 @@ class CompanyCreation(BaseModel):
     type = models.CharField(max_length=10,choices=creation_types)
     def __str__(self) -> str:
         return f'{self.title} {self.owner}'
+
+class Chat(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender_chats')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver_chats')
+
+class Message(models.Model):
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name='messages')
+    sender = models.OneToOneField(User, on_delete=models.CASCADE, related_name='sender')
+    content = models.CharField(max_length=1200)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.content
+
+    class Meta:
+        ordering = ('timestamp',)
     

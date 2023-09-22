@@ -187,3 +187,13 @@ class CompanyCreationSerializer(BaseSerializer):
     class Meta:
         model = CompanyCreation
         fields = '__all__'
+
+class ChatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
+        fields = '__all__'
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'
