@@ -162,7 +162,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "baladiya",
-        "USER": "scorpion_assia",
+        "USER": "postgres",
         "PASSWORD": "assiamdn2001",
         "HOST": "127.0.0.1",
         "PORT": "5432",

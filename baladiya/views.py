@@ -517,15 +517,51 @@ class CompanyCreationView(viewsets.ModelViewSet):
 
 class MessageListCreateView(generics.ListCreateAPIView):
     serializer_class = MessageSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["sender","chat"]
+    filter_fields = ["sender","chat"]
 
     def get_queryset(self):
         chat_id = self.kwargs['chat_id']
-        return Message.objects.filter(chat_id=chat_id)
+        return Message.objects.filter(chat_id=chat_id).order_by('timestamp')
 
 class ChatListCreateView(generics.ListCreateAPIView):
     serializer_class = ChatSerializer
+    pagination_class = CustomPagination
+    permission_classes =  [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["sender","receiver"]
+    filter_fields = ["sender","receiver"]
 
     def get_queryset(self):
         user = self.request.user
         return Chat.objects.filter(sender=user) | Chat.objects.filter(receiver=user)
+    
+    def create(self, request, *args, **kwargs):
+        sender_id = request.data.get('sender')
+        receiver_id = request.data.get('receiver')
+
+        sender = self.get_user(sender_id)
+        receiver = self.get_user(receiver_id)
+
+        if not sender or not receiver:
+            return Response({'detail': 'Invalid sender or receiver'}, status=status.HTTP_400_BAD_REQUEST)
+
+        existing_chat = Chat.objects.filter(sender=sender, receiver=receiver).first()
+
+        if existing_chat:
+            return Response({'detail': 'Chat already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+        chat = Chat.objects.create(sender=sender, receiver=receiver)
+
+        serializer = ChatSerializer(chat)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return None
 

@@ -300,7 +300,7 @@ class Chat(models.Model):
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name='messages')
-    sender = models.OneToOneField(User, on_delete=models.CASCADE, related_name='sender')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
     content = models.CharField(max_length=1200)
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
