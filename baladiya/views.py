@@ -509,6 +509,7 @@ class CompanyCreationView(viewsets.ModelViewSet):
     queryset = CompanyCreation.objects.all()
     serializer_class = CompanyCreationSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["title","owner","type"]
     filter_fields = ["title","owner","type"]
