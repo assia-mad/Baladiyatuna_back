@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import User, Chat, Message
+from django.db.models import Q
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -35,10 +36,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         try:
             sender_user = await self.get_user(sender)
-            await self.save_message(sender_user, message)
-            
-            # Notify the other user about the new message
             recipient_id = self.first_user_id if sender_user == self.second_user else self.second_user_id
+            recipient = await self.get_user(recipient_id)
+            await self.save_message(sender_user,recipient,  message)
+
             await self.notify_new_message(recipient_id, message, sender_user.first_name)
             
             # Send the message to the chat room
@@ -59,17 +60,45 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_user(self, user_id):
-        # Retrieve a user based on their ID
         try:
             return User.objects.get(id=user_id)
         except User.DoesNotExist:
             return None
 
     @database_sync_to_async
-    def save_message(self, sender, message_content):
-        # Save the message to the database
-        chat, _ = Chat.objects.get_or_create(sender=sender, receiver=self.second_user)
-        Message.objects.create(chat=chat, sender=sender, content=message_content)
+    def get_or_create_chat(self, user1, user2):
+        chat_identifier = self.create_chat_identifier(user1, user2)
+        print("the identifier", chat_identifier)
+        chat = Chat.objects.filter(identifier=chat_identifier).first()
+        print("chat exist",chat)
+        if not chat:
+            chat = Chat.objects.create(identifier=chat_identifier, first_user=user1, second_user=user2)
+
+        return chat
+
+    def create_chat_identifier(self, user1, user2):
+        sorted_ids = sorted([user1.id, user2.id])
+        return "_".join(map(str, sorted_ids))
+
+
+    @database_sync_to_async
+    def create_message(self, chat, sender, message_content):
+        try:
+            message = Message.objects.create(chat=chat, sender=sender, content=message_content)
+            print("Message created: ", message.id, chat.id, sender, message_content)
+            return message
+        except Exception as e:
+            print("Error creating message: ", str(e))
+
+
+    async def save_message(self, sender,receiver, message_content):
+        print("message users", sender, self.second_user)
+        chat = await self.get_or_create_chat(sender, receiver)
+        print("the chat to send is", chat)
+        # Use the synchronous database operation in an async context
+        await self.create_message(chat, sender, message_content)
+        print("yes it is done")
+
     
     async def notify_new_message(self, recipient_id, message_content, sender_name):
         # Notify the recipient about the new message

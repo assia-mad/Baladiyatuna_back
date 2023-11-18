@@ -19,6 +19,7 @@ from django.utils.dateparse import parse_date
 import django_filters
 from rest_framework.views import APIView
 from rest_framework import generics
+from django.db.models import Q
 
 
 
@@ -438,9 +439,9 @@ class StudyView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner__role","state"]
-    filter_fields = ["owner__role","state"]
-    search_fields = ["owner__id","title", "description","state","date","created_at"]
+    filterset_fields = ["owner__role"]
+    filter_fields = ["owner__role"]
+    search_fields = ["owner__id","owner__id","title", "description","date","created_at"]
     ordering_fields = ["created_at"]
 
 class SurveyView(viewsets.ModelViewSet):
@@ -516,7 +517,8 @@ class CompanyCreationView(viewsets.ModelViewSet):
     search_fields = ["title","owner__name","description","created_at","type"]
     ordering_fields = ["created_at"]
 
-class MessageListCreateView(generics.ListCreateAPIView):
+class MessageView(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
     serializer_class = MessageSerializer
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
@@ -524,41 +526,36 @@ class MessageListCreateView(generics.ListCreateAPIView):
     filterset_fields = ["sender","chat"]
     filter_fields = ["sender","chat"]
 
-    def get_queryset(self):
-        chat_id = self.kwargs['chat_id']
-        return Message.objects.filter(chat_id=chat_id).order_by('timestamp')
-
-class ChatListCreateView(generics.ListCreateAPIView):
+class ChatView(viewsets.ModelViewSet):
     serializer_class = ChatSerializer
     pagination_class = CustomPagination
     permission_classes =  [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["sender","receiver"]
-    filter_fields = ["sender","receiver"]
-
+    filterset_fields = ["first_user","second_user"]
+    filter_fields = ["first_user","second_user"] 
     def get_queryset(self):
         user = self.request.user
-        return Chat.objects.filter(sender=user) | Chat.objects.filter(receiver=user)
-    
-    def create(self, request, *args, **kwargs):
-        sender_id = request.data.get('sender')
-        receiver_id = request.data.get('receiver')
+        return Chat.objects.filter(Q(first_user=user) | Q(second_user=user))
 
-        sender = self.get_user(sender_id)
-        receiver = self.get_user(receiver_id)
+    def perform_create(self, serializer):
+        first_user_id = self.request.data.get('first_user')
+        second_user_id = self.request.data.get('second_user')
 
-        if not sender or not receiver:
-            return Response({'detail': 'Invalid sender or receiver'}, status=status.HTTP_400_BAD_REQUEST)
+        first_user = self.get_user(first_user_id)
+        second_user = self.get_user(second_user_id)
 
-        existing_chat = Chat.objects.filter(sender=sender, receiver=receiver).first()
+        if not first_user or not second_user:
+            raise serializers.ValidationError({'detail': 'Invalid first_user or second_user'})
+
+        existing_chat = Chat.objects.filter(
+            (Q(first_user=first_user) & Q(second_user=second_user)) |
+            (Q(first_user=second_user) & Q(second_user=first_user))
+        ).first()
 
         if existing_chat:
-            return Response({'detail': 'Chat already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            raise serializers.ValidationError({'detail': 'Chat already exists'})
 
-        chat = Chat.objects.create(sender=sender, receiver=receiver)
-
-        serializer = ChatSerializer(chat)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer.save(first_user=first_user, second_user=second_user)
 
     def get_user(self, user_id):
         try:

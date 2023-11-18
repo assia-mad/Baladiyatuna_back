@@ -63,16 +63,12 @@ router.register("surveys", SurveyView, basename="survey")
 router.register("choices", ChoiceView, basename="choice")
 router.register("beds_actuality", BedsActualityView, basename="beds_actuality")
 router.register("companies_creation", CompanyCreationView, basename="company_creation")
+router.register("chats",ChatView, basename="chat")
+router.register("messages", MessageView, basename="message")
 
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("chats/", ChatListCreateView.as_view(), name="chat-list-create"),
-    path(
-        "chats/<int:chat_id>/messages/",
-        MessageListCreateView.as_view(),
-        name="message-list-create",
-    ),
     path(
         "password-reset-confirm/",
         ResetPasswordView.as_view(),

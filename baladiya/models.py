@@ -258,7 +258,6 @@ class Actuality(BaseModel):
 class Study(BaseModel):
     owner = models.ForeignKey(User, related_name='studies', on_delete=models.CASCADE)
     date = models.DateField(null=True, blank=True)
-    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
         return f'{self.title} {self.owner}'
@@ -291,12 +290,14 @@ class BedsActuality(models.Model):
 class CompanyCreation(BaseModel):
     owner = models.ForeignKey(User, related_name='companies_creation', on_delete=models.CASCADE)
     type = models.CharField(max_length=10,choices=creation_types)
+
     def __str__(self) -> str:
         return f'{self.title} {self.owner}'
 
 class Chat(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender_chats')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver_chats')
+    identifier = models.CharField(max_length=100, unique=True, blank=True)
+    first_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='first_user_chats')
+    second_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='second_user_chats')
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name='messages')
