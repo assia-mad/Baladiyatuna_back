@@ -3,6 +3,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import User, Chat, Message
 from django.db.models import Q
+from rest_framework.authtoken.models import Token
+from urllib.parse import parse_qs
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -116,12 +118,23 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        user = self.scope["user"]
+        # Extract token from query string
+        query_string = self.scope['query_string'].decode()
+        token_param = parse_qs(query_string).get('token')
+        token_key = token_param[0] if token_param else None
 
-        if user.is_authenticated:
-            await self.accept()
-            user_id = user.id
-            await self.channel_layer.group_add(f"notifications_user_{user_id}", self.channel_name)
+        if token_key:
+            user = await self.get_user_from_token(token_key)
+            if user:
+                self.scope['user'] = user
+                await self.accept()
+                user_id = user.id
+                await self.channel_layer.group_add(f"notifications_user_{user_id}", self.channel_name)
+                return
+
+        print("user is not authenticated")
+        await self.close()
+
 
     async def disconnect(self, close_code):
         user = self.scope["user"]
@@ -143,3 +156,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             "message": message,
             "sender_name": sender_name,
         }))
+    
+    @database_sync_to_async
+    def get_user_from_token(self, token_key):
+        try:
+            token = Token.objects.get(key=token_key)
+            return token.user
+        except Token.DoesNotExist:
+            return None

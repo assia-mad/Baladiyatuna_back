@@ -8,5 +8,5 @@ websocket_urlpatterns = [
         ChatConsumer.as_asgi(),
 
     ),
-    re_path(r'ws/notifications/$', NotificationConsumer.as_asgi()),
+    re_path(r'ws/notifications/', NotificationConsumer.as_asgi()),
 ]
