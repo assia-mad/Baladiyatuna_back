@@ -299,6 +299,7 @@ class Chat(models.Model):
     first_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='first_user_chats')
     second_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='second_user_chats')
     last_message_time = models.DateTimeField(auto_now=True)
+    last_message_content = models.CharField(max_length=1200)
     
     class Meta:
         ordering = ('-last_message_time',)

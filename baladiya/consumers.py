@@ -42,7 +42,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             recipient = await self.get_user(recipient_id)
             await self.save_message(sender_user,recipient,  message)
 
-            await self.notify_new_message(recipient_id, message, sender_user.id)
+            await self.notify_new_message(recipient_id, message, sender_user.first_name+sender_user.last_name,sender_user.id)
             
             # Send the message to the chat room
             await self.channel_layer.group_send(
@@ -88,6 +88,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             message = Message.objects.create(chat=chat, sender=sender, content=message_content)
             chat.last_message_time = message.timestamp 
+            chat.last_message_content = message_content
             chat.save()
             print("Message created: ", message.id, chat.id, sender, message_content)
             return message
@@ -104,17 +105,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print("yes it is done")
 
     
-    async def notify_new_message(self, recipient_id, message_content, sender):
+    async def notify_new_message(self, recipient_id, message_content, sender_name,sender_id):
         # Notify the recipient about the new message
         await self.channel_layer.group_send(
             f"notifications_user_{recipient_id}",
             {
                 "type": "notification.new_message",
                 "message": message_content,
-                "sender": sender,
+                "sender_name":sender_name,
+                "sender_id": sender_id,
             },
         )
-        print("notiiiiiiiiiiiiiiiiiiiiiiiiiiiiiif sent", sender)
+        print("notiiiiiiiiiiiiiiiiiiiiiiiiiiiiiif sent", sender_id,sender_name)
 
 
 
