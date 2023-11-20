@@ -151,16 +151,18 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         # Handle incoming messages if needed (for notifications)
         pass
 
-    # async def notification_new_message(self, event):
-    #     # Send a notification about a new message to the WebSocket client
-    #     message = event["message"]
-    #     sender_name = event["sender_name"]
-    #     await self.send(text_data=json.dumps({
-    #         "type": "new_message",
-    #         "message": message,
-    #         "sender": sender_name,
-    #     }))
-    
+    async def notification_new_message(self, event):
+        message = event["message"]
+        sender_name = event["sender_name"]
+        sender_id = event["sender_id"]
+
+        # Send the notification data to the WebSocket client
+        await self.send(text_data=json.dumps({
+            "type": "new_message",
+            "message": message,
+            "sender_name": sender_name,
+            "sender_id": sender_id
+        }))
     @database_sync_to_async
     def get_user_from_token(self, token_key):
         try:
