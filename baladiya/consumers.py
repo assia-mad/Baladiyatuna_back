@@ -42,7 +42,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             recipient = await self.get_user(recipient_id)
             await self.save_message(sender_user,recipient,  message)
 
-            await self.notify_new_message(recipient_id, message, sender_user.first_name)
+            await self.notify_new_message(recipient_id, message, sender_user.id)
             
             # Send the message to the chat room
             await self.channel_layer.group_send(
@@ -87,6 +87,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def create_message(self, chat, sender, message_content):
         try:
             message = Message.objects.create(chat=chat, sender=sender, content=message_content)
+            chat.last_message_time = message.timestamp 
+            chat.save()
             print("Message created: ", message.id, chat.id, sender, message_content)
             return message
         except Exception as e:
@@ -102,17 +104,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print("yes it is done")
 
     
-    async def notify_new_message(self, recipient_id, message_content, sender_name):
+    async def notify_new_message(self, recipient_id, message_content, sender):
         # Notify the recipient about the new message
         await self.channel_layer.group_send(
             f"notifications_user_{recipient_id}",
             {
                 "type": "notification.new_message",
                 "message": message_content,
-                "sender_name": sender_name,
+                "sender": sender,
             },
         )
-        print("notiiiiiiiiiiiiiiiiiiiiiiiiiiiiiif sent")
+        print("notiiiiiiiiiiiiiiiiiiiiiiiiiiiiiif sent", sender)
 
 
 
@@ -147,15 +149,15 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         # Handle incoming messages if needed (for notifications)
         pass
 
-    async def notification_new_message(self, event):
-        # Send a notification about a new message to the WebSocket client
-        message = event["message"]
-        sender_name = event["sender_name"]
-        await self.send(text_data=json.dumps({
-            "type": "new_message",
-            "message": message,
-            "sender_name": sender_name,
-        }))
+    # async def notification_new_message(self, event):
+    #     # Send a notification about a new message to the WebSocket client
+    #     message = event["message"]
+    #     sender_name = event["sender_name"]
+    #     await self.send(text_data=json.dumps({
+    #         "type": "new_message",
+    #         "message": message,
+    #         "sender": sender_name,
+    #     }))
     
     @database_sync_to_async
     def get_user_from_token(self, token_key):

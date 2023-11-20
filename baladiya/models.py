@@ -298,6 +298,10 @@ class Chat(models.Model):
     identifier = models.CharField(max_length=100, unique=True, blank=True)
     first_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='first_user_chats')
     second_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='second_user_chats')
+    last_message_time = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ('-last_message_time',)
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name='messages')
@@ -310,7 +314,7 @@ class Message(models.Model):
         return self.content
 
     class Meta:
-        ordering = ('timestamp',)
+        ordering = ('-timestamp',)
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
