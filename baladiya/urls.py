@@ -58,6 +58,7 @@ router.register("visits", VisiteView, basename="visite")
 router.register("emergencies", EmergencyFunctionsView, basename="emergency_function")
 router.register("albums", AlbumView, basename="album")
 router.register("actualities", ActualityView, basename="actuality")
+router.register("admin_actualities", AdminActualityView, basename="admin_actuality")
 router.register("studies", StudyView, basename="study")
 router.register("surveys", SurveyView, basename="survey")
 router.register("choices", ChoiceView, basename="choice")
@@ -65,6 +66,9 @@ router.register("beds_actuality", BedsActualityView, basename="beds_actuality")
 router.register("companies_creation", CompanyCreationView, basename="company_creation")
 router.register("chats",ChatView, basename="chat")
 router.register("messages", MessageView, basename="message")
+router.register("history",Historique, basename="history")
+router.register("publicity_offers", PublicityOfferView, basename="publicity_offer")
+router.register("publicities", PublicityView, basename="publicity")
 
 
 urlpatterns = [

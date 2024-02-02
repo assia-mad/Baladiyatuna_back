@@ -20,6 +20,12 @@ import django_filters
 from rest_framework.views import APIView
 from rest_framework import generics
 from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import BaseFilterBackend
+from django.db.models import Count
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.utils import timezone
 
 
 
@@ -149,7 +155,7 @@ class ManageUsersView(viewsets.ModelViewSet):
         "first_name",
         "last_name",
         "email",
-        "commune__id",
+        "commune",
         "phone",
         "role",
         "is_superuser",
@@ -262,10 +268,10 @@ class EcologicalInformationView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner__role", "type"]
-    filterset_fields = ["owner__role", "type"]
-    search_fields = ["owner__id", "title", "description", "created_at", "type"]
-    ordering_fields = ["created_at", "date"]
+    filter_fields = ["owner__role", "type","state"]
+    filterset_fields = ["owner__role", "type","state"]
+    search_fields = ["owner__id", "title", "description", "created_at", "type","state"]
+    ordering_fields = ["created_at", "state"]
 
     def get_queryset(self):
         commune = self.request.user.commune
@@ -292,9 +298,9 @@ class AudianceDemandView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ["owner__role", "state"]
-    filterset_fields = ["owner__role", "state"]
-    search_fields = ["owner__id", "title", "description", "created_at", "state", "date"]
+    filter_fields = ["owner__role", "state",'meet_type','public_meet_type']
+    filterset_fields = ["owner__role", "state",'meet_type','public_meet_type']
+    search_fields = ["owner__id", "created_at", "state", "date",'meet_type','public_meet_type']
     ordering_fields = ["created_at", "date"]
 
     def get_queryset(self):
@@ -397,6 +403,18 @@ class HistoriqueRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+class Historique(viewsets.ModelViewSet):
+    queryset= Historique.objects.all()
+    serializer_class = HistoriqueSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["state"]
+    filter_fields = ["state"]
+    search_fields = ["owner__id", "event", "date", "created_at","commune"]
+    ordering_fields = ["created_at"]
+
+
 
 class EmergencyFunctionsView(viewsets.ModelViewSet):
     queryset= EmergencyFunctions.objects.all()
@@ -404,9 +422,9 @@ class EmergencyFunctionsView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["owner__role","state","type"]
-    filter_fields = ["owner__role","state","type"]
-    search_fields = ["owner__id", "title", "description", "created_at","type"]
+    filterset_fields = ["owner__role","state","type","public"]
+    filter_fields = ["owner__role","state","type","public"]
+    search_fields = ["owner__id", "title", "description", "created_at","type","public"]
     ordering_fields = ["created_at"]
 
 
@@ -422,17 +440,30 @@ class AlbumView(viewsets.ModelViewSet):
     search_fields = ["owner__id","name","state","commune"]
     ordering_fields = ["created_at"]
 
+
 class ActualityView(viewsets.ModelViewSet):
     queryset= Actuality.objects.all()
     serializer_class = ActualitySerializer
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_backends = [ DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["owner__role","state","type"]
     filter_fields = ["owner__role","state","type"]
     search_fields = ["owner__id","title", "description","state","type","created_at"]
     ordering_fields = ["created_at"]
 
+class AdminActualityView(viewsets.ModelViewSet):
+    serializer_class = ActualitySerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]  
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["state"]
+    search_fields = ["title", "description", "state", "created_at"]
+    ordering_fields = ["created_at"]
+
+    def get_queryset(self):
+        return Actuality.objects.filter(type__in=['Education', 'Entreprise'])
+    
 class StudyView(viewsets.ModelViewSet):
     queryset= Study.objects.all()
     serializer_class = StudySerializer
@@ -507,15 +538,15 @@ class BedsActualityView(viewsets.ModelViewSet):
     ordering_fields = ["created_at"]
 
 class CompanyCreationView(viewsets.ModelViewSet):
-    queryset = CompanyCreation.objects.all()
+    queryset = CompanyCreation.objects.order_by('rang')
     serializer_class = CompanyCreationSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["title","owner","type"]
-    filter_fields = ["title","owner","type"]
-    search_fields = ["title","owner__name","description","created_at","type"]
-    ordering_fields = ["created_at"]
+    filterset_fields = ["title","owner","type","rang"]
+    filter_fields = ["title","owner","type","rang"]
+    search_fields = ["title","owner__id","description","created_at","type","rang"]
+    ordering_fields = ["created_at","rang"]
 
 class MessageView(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -563,3 +594,34 @@ class ChatView(viewsets.ModelViewSet):
         except User.DoesNotExist:
             return None
 
+class PublicityOfferView(viewsets.ModelViewSet):
+    queryset= PublicityOffer.objects.all()
+    serializer_class = PublicityOfferSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["commune"]
+    filter_fields = ["commune"]
+    search_fields = ["commune","population","price" ,"created_at"]
+    ordering_fields = ["created_at"]
+
+class PublicityView(viewsets.ModelViewSet):
+    queryset= Publicity.objects.all()
+    serializer_class = PublicitySerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["owner","title","description","created_at","start_date","end_date","state"]
+    filter_fields = ["owner","title","description","created_at","start_date","end_date","state"]
+    search_fields = ["title","description","created_at","link","start_date","end_date","state"]
+    ordering_fields = ["created_at","start_date","end_date"]
+
+    def get_queryset(self):
+        current_date = timezone.now().date()
+        queryset = super().get_queryset()
+        queryset = queryset.filter(
+            Q(start_date__lte=current_date, end_date__gte=current_date) |
+            Q(start_date__isnull=True, end_date__isnull=True)
+        )
+
+        return queryset

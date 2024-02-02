@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
+from django.db.models import JSONField
 
 num_only = RegexValidator(r'^[0-9]*$','only numbers are allowed')
 role_choices = [
@@ -67,6 +68,21 @@ creation_types = [
     ('Social','Social'),
     ('Economique','Economique')
 ]
+meet_types=[
+    ('Privé','Privé'),
+    ('Publique','Publique')
+]
+public_meet_types = [
+    ('Politique','Politique'),
+    ('Sociale/Santé','Sociale/Santé'),
+    ('Economique/Commercial','Economique/Commercial'),
+    ('Culturel/Educatif','Culturel/Éducatif'),
+    ('Ecologique','Ecologique'),
+    ('Autre','Autre')
+]
+
+def default_communes():
+    return {"communes":[]}
 
 class Wilaya(models.Model):
     name = models.CharField(max_length=20, null=False)
@@ -172,12 +188,21 @@ class Product(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to='products_images')
     action_type = models.CharField(max_length=15,choices=product_action_choices)
     created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self) -> str:
+        return f'{self.name}'
 
-class AudianceDemand(BaseModel):
+
+class AudianceDemand(models.Model):
     owner = models.ForeignKey(User, related_name='audiance_demands', on_delete=models.CASCADE)
     date = models.DateField(null=True, blank=True)
-    person = models.CharField(max_length=50, blank=True)  # Make the person field optional
+    person = models.CharField(max_length=50, blank=True) 
+    meet_type = models.CharField(max_length=20,choices=meet_types, default='Privé')
+    public_meet_type = models.CharField(max_length=50,choices=public_meet_types, default='Autre')
     state = models.CharField(max_length=20, choices=state_choices, default='en traitement')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f'{self.owner}-{self.person} {self.title}'
 
 
 class Agenda(BaseModel):
@@ -207,7 +232,7 @@ class Visite(BaseModel):
     localisation = models.CharField(max_length=50)
     commune = models.IntegerField()
     image = models.ImageField(null=True, blank=True, upload_to='visites_images')
-    liked_by = models.ManyToManyField(User, blank=True)  # Allow an empty liked_by list
+    liked_by = models.ManyToManyField(User, blank=True)  
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
 
     def __str__(self) -> str:
@@ -227,20 +252,22 @@ class Album(models.Model):
 
 
 class Historique(models.Model):
-    title = models.CharField(max_length=255)
+    event = models.CharField(max_length=255)
     date = models.DateField()
     commune = models.IntegerField()
     owner = models.ForeignKey(User,related_name='historique', on_delete=models.CASCADE)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.title
+        return self.event
 
 
 class EmergencyFunctions(BaseModel):
     owner = models.ForeignKey(User, related_name='emergency_functions', on_delete=models.CASCADE)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
     type = models.CharField(max_length=20, choices=emergency_types)
+    public = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f'{self.owner} {self.title}'
@@ -289,6 +316,7 @@ class BedsActuality(models.Model):
     
 class CompanyCreation(BaseModel):
     owner = models.ForeignKey(User, related_name='companies_creation', on_delete=models.CASCADE)
+    rang = models.PositiveBigIntegerField(default=0)
     type = models.CharField(max_length=10,choices=creation_types)
 
     def __str__(self) -> str:
@@ -325,4 +353,24 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.message
+
+class PublicityOffer(models.Model):
+    wilaya = models.PositiveIntegerField(null=True)
+    commune = models.PositiveIntegerField()
+    population = models.PositiveIntegerField(default=0)
+    price = models.PositiveIntegerField(default = 0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.commune
+
+class Publicity(BaseModel):
+    owner = models.ForeignKey(User, related_name='publicities', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='photos/')
+    link = models.URLField(max_length=200)
+    communes = JSONField(default=default_communes)
+    state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
+    start_date = models.DateField(null=True,blank=True) 
+    end_date = models.DateField(null=True,blank=True) 
     
+
