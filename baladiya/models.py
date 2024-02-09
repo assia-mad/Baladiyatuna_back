@@ -115,6 +115,7 @@ class User(AbstractUser):
 class BaseModel(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=500, null=False, blank=True)
+    commune = models.PositiveIntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         abstract = True
@@ -187,6 +188,7 @@ class Product(models.Model):
     price = models.IntegerField()
     image = models.ImageField(null=True, blank=True, upload_to='products_images')
     action_type = models.CharField(max_length=15,choices=product_action_choices)
+    commune = models.PositiveIntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self) -> str:
         return f'{self.name}'
@@ -241,7 +243,7 @@ class Visite(BaseModel):
 class Album(models.Model):
     image = models.ImageField(upload_to='visites_images')
     name = models.CharField(max_length=50)
-    commune = models.IntegerField()
+    commune = models.PositiveIntegerField()
     owner = models.ForeignKey(User, related_name='albums', on_delete=models.CASCADE)
     liked_by = models.ManyToManyField(User, blank=True)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
@@ -254,7 +256,7 @@ class Album(models.Model):
 class Historique(models.Model):
     event = models.CharField(max_length=255)
     date = models.DateField()
-    commune = models.IntegerField()
+    commune = models.PositiveIntegerField()
     owner = models.ForeignKey(User,related_name='historique', on_delete=models.CASCADE)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
     created_at = models.DateTimeField(auto_now_add=True)
