@@ -309,7 +309,7 @@ class AudianceDemandView(viewsets.ModelViewSet):
     filter_backend = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filter_fields = ["owner__role", "state",'meet_type','public_meet_type']
     filterset_fields = ["owner__role", "state",'meet_type','public_meet_type']
-    search_fields = ["owner__id", "created_at", "state", "date",'meet_type','public_meet_type']
+    search_fields = ["owner__id", "created_at", "state", "date",'meet_type','public_meet_type','description']
     ordering_fields = ["created_at", "date"]
 
     # def get_queryset(self):

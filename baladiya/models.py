@@ -198,6 +198,7 @@ class AudianceDemand(models.Model):
     owner = models.ForeignKey(User, related_name='audiance_demands', on_delete=models.CASCADE)
     date = models.DateField(null=True, blank=True)
     person = models.CharField(max_length=50, blank=True) 
+    description = models.TextField(max_length=500, null=False, blank=True)
     meet_type = models.CharField(max_length=20,choices=meet_types, default='Privé')
     public_meet_type = models.CharField(max_length=50,choices=public_meet_types, default='Autre')
     state = models.CharField(max_length=20, choices=state_choices, default='en traitement')
