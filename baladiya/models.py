@@ -82,7 +82,7 @@ public_meet_types = [
 ]
 
 def default_communes():
-    return {"communes":[]}
+    return []
 
 class Wilaya(models.Model):
     name = models.CharField(max_length=20, null=False)
@@ -366,13 +366,19 @@ class PublicityOffer(models.Model):
     def __str__(self):
         return self.commune
 
-class Publicity(BaseModel):
+class Publicity(models.Model):
     owner = models.ForeignKey(User, related_name='publicities', on_delete=models.CASCADE)
+    title = models.CharField(max_length=50)
+    description = models.TextField(max_length=500, null=False, blank=True)
     image = models.ImageField(upload_to='photos/')
     link = models.URLField(max_length=200)
+    description = models.TextField()
     communes = JSONField(default=default_communes)
     state = models.CharField(max_length=20,choices=state_choices,default='en traitement')
     start_date = models.DateField(null=True,blank=True) 
     end_date = models.DateField(null=True,blank=True) 
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.title} {self.owner}'
 
