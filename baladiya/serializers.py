@@ -3,6 +3,10 @@ from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer, Pas
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import check_password
+from rest_framework.exceptions import ValidationError
+from rest_framework import exceptions
+from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from .models import *
 
 class WilayaSerializer(serializers.ModelSerializer):
@@ -42,9 +46,16 @@ class CustomRegisterSerializer(RegisterSerializer):
         data_dict['is_active'] = self.validated_data.get('is_active', '')
         data_dict['social_approved'] = self.validated_data.get('social_approved', '')
         return data_dict
+    
 
 class CustomLoginSerializer(LoginSerializer): 
     username = None
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        user = attrs.get('user')
+        if user and not user.social_approved:
+            raise exceptions.ValidationError(_('Utilisateur n a pas été approuvé par administrateur pour se connecter.'))
+        return attrs
 
 class PasswordResetSerializer(serializers.ModelSerializer):
     class Meta:

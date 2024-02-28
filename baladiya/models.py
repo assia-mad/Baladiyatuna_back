@@ -107,7 +107,7 @@ class User(AbstractUser):
     commune = models.PositiveIntegerField(null=True, blank=True)
     birth_date = models.DateField(null=True,blank=True)
     social_approved = models.BooleanField(default=False)
-    document = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_img')
+    document = models.ImageField(upload_to='profile_images/', blank = True , null = True , verbose_name='user_doc')
     
     def __str__(self) -> str:
         return self.first_name+' '+self.last_name
