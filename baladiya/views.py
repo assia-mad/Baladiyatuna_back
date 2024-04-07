@@ -18,7 +18,6 @@ from rest_framework.exceptions import ParseError
 from django.utils.dateparse import parse_date
 import django_filters
 from rest_framework.views import APIView
-from rest_framework import generics
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import BaseFilterBackend
@@ -26,7 +25,6 @@ from django.db.models import Count
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils import timezone
-
 
 
 
@@ -126,7 +124,60 @@ class ResetPasswordView(generics.UpdateAPIView):
 
 
 class ManageUsersView(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by("pk")
+    serializer_class = ManagerUserSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_fields = [
+        "first_name",
+        "last_name",
+        "email",
+        "commune",
+        "phone",
+        "role",
+        "is_superuser",
+        "is_active",
+        "social_approved",
+    ]
+    filterset_fields = [
+        "first_name",
+        "last_name",
+        "email",
+        "commune",
+        "phone",
+        "role",
+        "is_superuser",
+        "is_active",
+        "social_approved",
+    ]
+    search_fields = [
+        "first_name",
+        "last_name",
+        "email",
+        "commune",
+        "phone",
+        "role",
+        "is_superuser",
+        "is_active",
+        "social_approved",
+    ]
+    ordering_fields = [
+        "first_name",
+        "last_name",
+        "email",
+        "commune",
+        "phone",
+        "role",
+        "is_superuser",
+        "is_active",
+        "social_approved",
+    ]
+
+    def get_queryset(self):
+        commune = self.request.user.commune
+        return User.objects.filter(commune=commune, role__in=["Citoyen", "Association", "Entrepreneur"]).order_by("-pk")
+
+class ManageAgentsView(viewsets.ModelViewSet):
     serializer_class = ManagerUserSerializer
     pagination_class = CustomPagination
     # permission_classes = [IsAuthenticated]
@@ -175,6 +226,10 @@ class ManageUsersView(viewsets.ModelViewSet):
         "is_active",
         "social_approved",
     ]
+
+    def get_queryset(self):
+        return User.objects.filter(role="Agent").order_by("-pk")
+    
 
 class FormationView(viewsets.ModelViewSet):
     queryset = Formation.objects.all()
@@ -656,3 +711,22 @@ class PublicityView(viewsets.ModelViewSet):
         )
 
         return queryset
+
+
+class UsersStats(generics.ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+
+    def get(self, request, *args, **kwargs):
+        if request.user.role == "Admin":
+            user_stats = User.objects.values('role').annotate(total=Count('id')).order_by('-total')
+        elif request.user.role == "Agent":
+
+            user_stats = User.objects.filter(commune=request.user.commune).values('role').annotate(total=Count('id')).order_by('-total')
+        else:
+            user_stats = []
+
+        data = {'users_by_role': user_stats}
+        return Response(data)
+

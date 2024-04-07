@@ -9,6 +9,11 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from .models import *
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
 class WilayaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wilaya

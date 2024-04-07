@@ -69,6 +69,7 @@ router.register("messages", MessageView, basename="message")
 router.register("history",Historique, basename="history")
 router.register("publicity_offers", PublicityOfferView, basename="publicity_offer")
 router.register("publicities", PublicityView, basename="publicity")
+router.register("manage_agents", ManageAgentsView, basename="manage_agent")
 
 
 urlpatterns = [
@@ -117,6 +118,9 @@ urlpatterns = [
         NoVotedSurveyByUser.as_view(),
         name="voted-surveys-by-user",
     ),
+    path('stats_users/',
+          UsersStats.as_view(), 
+          name ='stats_users'),
     re_path(
         r"^swagger/$",
         schema_view.with_ui("swagger", cache_timeout=0),
